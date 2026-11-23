@@ -210,6 +210,26 @@ section > .wrap > p.intro { color: var(--muted); max-width: 38em; margin: 0 0 40
 .stack { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px; font-family: var(--display); font-size: 14px; }
 .stack span { border: 2px solid var(--line); padding: 6px 12px; color: var(--cream); background: var(--ink); }
 
+/* Support: buy the studio an energy drink */
+.support { padding: 64px 0; }
+.support .wrap { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 36px; align-items: center; }
+.can { image-rendering: pixelated; width: 108px; height: 180px; flex: none; }
+.can.big { filter: drop-shadow(0 0 34px rgba(251, 184, 19, .25)); }
+.support h2 { margin: 14px 0 10px; }
+.support p.txt { color: var(--muted); max-width: 36em; margin: 0 0 24px; }
+.drink {
+  display: inline-flex; align-items: center; gap: 14px; text-decoration: none;
+  padding: 8px 20px 8px 12px; border: 3px solid var(--cream); background: var(--sun-gold); color: var(--ink);
+  box-shadow: 5px 5px 0 var(--sun-red); font-family: var(--display); font-weight: 700; font-size: 16px;
+  transition: transform .08s steps(2), box-shadow .08s steps(2);
+}
+.drink .can { width: 27px; height: 45px; }
+.drink:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--sun-red); }
+.drink:hover .can { animation: shake .3s steps(2) infinite; }
+@keyframes shake { 50% { transform: rotate(-8deg) translateY(-1px); } }
+@media (max-width: 560px) { .support .wrap { grid-template-columns: minmax(0, 1fr); gap: 20px; } .can.big { width: 78px; height: 130px; } }
+@media (prefers-reduced-motion: reduce) { .drink { transition: none; } .drink:hover .can { animation: none; } }
+
 /* Footer */
 footer { padding: 48px 0 56px; }
 footer .wrap { display: flex; gap: 28px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
@@ -249,6 +269,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <nav aria-label="Sections">
         <a href="#builds">Builds</a>
         <a href="#how">How we build</a>
+        <a href="#support">Support</a>
         <details class="arcade" id="arcade">
           <summary>Tiny Arcade</summary>
           <div class="arcade-menu">
@@ -382,6 +403,21 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   </div>
 </section>
 
+<section id="support" class="support">
+  <div class="wrap">
+    <canvas class="can big" width="18" height="30" aria-hidden="true"></canvas>
+    <div>
+      <p class="label">Support</p>
+      <h2>Fuel the next build</h2>
+      <p class="txt">Every game here is free to play. If one of them ate your afternoon, you can buy the studio an energy drink. It goes straight into the next build.</p>
+      <a class="drink" id="drink-link" href="https://paypal.me/iandunn24" target="_blank" rel="noopener">
+        <canvas class="can" width="18" height="30" aria-hidden="true"></canvas>
+        <span>Buy me an energy drink</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <div class="horizon" role="presentation"></div>
 
 <footer>
@@ -462,6 +498,40 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   var d = document.getElementById('arcade'); if (!d) return;
   document.addEventListener('click', function (e) { if (d.open && !d.contains(e.target)) d.open = false; });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && d.open) { d.open = false; d.querySelector('summary').focus(); } });
+})();
+
+// 32-bit energy can: drawn pixel by pixel on an 18x30 grid, then scaled up with CSS.
+(function () {
+  var cs = document.querySelectorAll('canvas.can'); if (!cs.length) return;
+  // Cylinder shading across the 12-pixel-wide body, left to right.
+  var BODY = ['#141c44', '#22306e', '#3a4c9c', '#5468c0', '#3a4c9c', '#2a3a80', '#22306e', '#22306e', '#1b2658', '#141c44', '#0e1433', '#090d24'];
+  var METAL = ['#6d7388', '#a9afc2', '#e6e9f2', '#ffffff', '#e6e9f2', '#c5cada', '#a9afc2', '#a9afc2', '#8d93a8', '#6d7388', '#565c70', '#42475a'];
+  var BAND = ['#d93a1a', '#f47a0f', '#e2541a', '#f98f12', '#fbb813'];
+  var BOLT = { 7: [9, 10], 8: [8, 9, 10], 9: [8, 9], 10: [7, 8], 11: [7, 8, 9, 10, 11], 12: [9, 10], 13: [8, 9], 14: [7, 8], 15: [7] };
+  function shade(hex, k) { // lighten (k > 0) or darken (k < 0) a colour
+    var n = parseInt(hex.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    function f(v) { return Math.max(0, Math.min(255, Math.round(k > 0 ? v + (255 - v) * k : v * (1 + k)))); }
+    return 'rgb(' + f(r) + ',' + f(g) + ',' + f(b) + ')';
+  }
+  function draw(c) {
+    var x = c.getContext('2d'), i, y;
+    function px(cx, cy, col) { x.fillStyle = col; x.fillRect(cx, cy, 1, 1); }
+    x.clearRect(0, 0, 18, 30);
+    for (i = 0; i < 12; i++) {
+      var cx = 3 + i;
+      for (y = 5; y <= 26; y++) px(cx, y, BODY[i]);                       // body
+      for (y = 19; y <= 23; y++) px(cx, y, shade(BAND[y - 19], i < 2 || i > 8 ? -0.35 : i === 3 ? 0.35 : 0)); // sunset band
+      px(cx, 4, METAL[i]); px(cx, 27, shade(METAL[i], -0.3));              // top and bottom rims
+      if (i > 0 && i < 11) { px(cx, 3, shade(METAL[i], -0.15)); px(cx, 28, shade(METAL[i], -0.5)); }
+      if (i > 1 && i < 10) px(cx, 2, METAL[i]);                            // lid
+    }
+    px(8, 1, '#e6e9f2'); px(9, 1, '#ffffff'); px(10, 1, '#a9afc2');        // pull tab
+    for (var row in BOLT) BOLT[row].forEach(function (bx) { px(bx, +row, '#fbb813'); }); // mana bolt
+    px(8, 8, '#fff3c4'); px(7, 11, '#fff3c4');                             // bolt glints
+    px(12, 9, '#f7f0e1'); px(12, 8, '#f7f0e188'); px(12, 10, '#f7f0e188'); px(11, 9, '#f7f0e188'); px(13, 9, '#f7f0e188'); // sparkle
+    for (y = 6; y <= 25; y++) if (y < 19 || y > 23) px(5, y, y % 7 === 0 ? '#5468c0' : '#7f92e0'); // long highlight
+  }
+  for (var k = 0; k < cs.length; k++) draw(cs[k]);
 })();
 </script>
 </body>
