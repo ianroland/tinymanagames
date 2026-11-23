@@ -201,6 +201,35 @@ section > .wrap > p.intro { color: var(--muted); max-width: 38em; margin: 0 0 40
 }
 .next b { font-family: var(--display); color: var(--cream); font-size: 15px; }
 
+/* Tiny Mana Jam teaser */
+.jam { border-top: 2px solid var(--line); }
+.jam .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
+.jam p.intro { color: var(--muted); max-width: 34em; margin: 0 0 24px; }
+.rules { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--line); }
+.rules li { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 2px solid var(--line); color: var(--muted); font-size: 15px; align-items: baseline; }
+.rules b { font-family: var(--display); font-size: 15px; color: var(--sun-gold); }
+.roller { border: 3px solid var(--cream); background: var(--ink-2); box-shadow: 8px 8px 0 var(--sun-gold); padding: 24px; display: flex; flex-direction: column; gap: 18px; align-items: flex-start; }
+.roller .k { font-family: var(--display); font-size: 13px; color: var(--muted); margin: 0; }
+.roller .dna { margin: 0; align-self: stretch; display: flex; border-radius: 28px; padding: 12px 18px 12px 12px; }
+.roller .dna-v { font-size: 18px; min-height: 2.6em; display: flex; flex-wrap: wrap; align-items: center; gap: 0 6px; }
+.roller .dna-v span { color: var(--cream); }
+.roller small { color: var(--muted); font-size: 13px; }
+button.btn { cursor: pointer; font-family: var(--display); }
+.reels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; align-self: stretch; }
+.reel { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; border: 2px solid var(--line); padding: 8px 10px; background: var(--ink); }
+.chip { font-family: var(--display); font-size: 12px; color: var(--sun-gold); }
+.hold { font-family: var(--display); font-size: 12px; cursor: pointer; color: var(--muted); background: transparent; border: 2px solid var(--line); padding: 3px 8px; }
+.hold:hover { color: var(--cream); border-color: var(--cream); }
+.hold[aria-pressed="true"] { background: var(--sun-orange); border-color: var(--sun-orange); color: var(--ink); font-weight: 700; }
+.hold:disabled { opacity: .4; cursor: default; }
+.pitch { margin: 0; color: var(--cream); font-size: 16px; min-height: 3.2em; align-self: stretch; }
+.btn:disabled { opacity: .4; cursor: default; transform: none; }
+.recent { align-self: stretch; border-top: 2px solid var(--line); padding-top: 14px; }
+.recent ol { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.recent li b { color: var(--cream); font-weight: 500; }
+@media (max-width: 420px) { .reels { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 820px) { .jam .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px; } }
+
 /* How we build */
 .how { background: var(--ink-2); }
 .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 36px; }
@@ -268,6 +297,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <a href="#top" aria-label="Tiny Mana Studios, home"><img src="wordmark.png" alt="Tiny Mana Studios" width="900" height="230"></a>
       <nav aria-label="Sections">
         <a href="#builds">Builds</a>
+        <a href="#jam">Jam</a>
         <a href="#how">How we build</a>
         <a href="#support">Support</a>
         <details class="arcade" id="arcade">
@@ -375,6 +405,49 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
           <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
           <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">??? <i>meets</i> ???</span></div>
         </div>
+    </div>
+  </div>
+</section>
+
+<section id="jam" class="jam">
+  <div class="wrap">
+    <div>
+      <p class="label">Coming eventually</p>
+      <h2>Tiny Mana Jam</h2>
+      <p class="intro">A 48-hour AI build contest. Every jam opens with a random Retro DNA theme, and each dev builds their own game in that spirit before the clock runs out. No date yet. Until then, a new Retro DNA theme is drawn here every day.</p>
+      <ul class="rules">
+        <li><b>48 hours</b><span>From theme reveal to final link.</span></li>
+        <li><b>Solo</b><span>One developer per entry.</span></li>
+        <li><b>Agents</b><span>Claude Code, plus one helper model of your choice.</span></li>
+        <li><b>Web stack</b><span>A full game in HTML, CSS and JavaScript that plays in a browser tab.</span></li>
+        <li><b>Homage</b><span>Clone the feel, not the files. Art, names and code are your own.</span></li>
+      </ul>
+    </div>
+
+    <div class="roller">
+      <p class="k" id="roll-k">Retro DNA generator</p>
+      <div class="dna">
+        <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
+        <div class="dna-t">
+          <span class="dna-k">Retro DNA</span>
+          <span class="dna-v"><span id="roll-a">???</span> <i>meets</i> <span id="roll-b">???</span></span>
+        </div>
+      </div>
+      <div class="reels">
+        <div class="reel"><span class="chip" id="genre-a">Genre 1</span><button class="hold" id="hold-a" type="button" aria-pressed="false">Hold</button></div>
+        <div class="reel"><span class="chip" id="genre-b">Genre 2</span><button class="hold" id="hold-b" type="button" aria-pressed="false">Hold</button></div>
+      </div>
+      <p class="pitch" id="pitch" aria-live="polite">Two classics and a one-line pitch. A new theme is drawn every day.</p>
+      <div class="cta-row">
+        <button class="btn" id="roll-btn" type="button">&#9654; Roll a theme</button>
+        <button class="btn ghost" id="copy-btn" type="button" disabled>Copy idea</button>
+        <button class="btn ghost" id="today-btn" type="button" hidden>Today's theme</button>
+      </div>
+      <div class="recent" id="recent-box" hidden>
+        <p class="k">Recent rolls</p>
+        <ol id="recent"></ol>
+      </div>
+      <small id="pool-note">The daily theme changes at midnight UTC.</small>
     </div>
   </div>
 </section>
@@ -532,6 +605,130 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     for (y = 6; y <= 25; y++) if (y < 19 || y > 23) px(5, y, y % 7 === 0 ? '#5468c0' : '#7f92e0'); // long highlight
   }
   for (var k = 0; k < cs.length; k++) draw(cs[k]);
+})();
+
+// Tiny Mana Jam: Retro DNA idea generator.
+// Rolls two classics from different genres and writes a one-line pitch from them.
+(function () {
+  var btn = document.getElementById('roll-btn'); if (!btn) return;
+  // [label, "A <genre> game", "with <what that genre brings>", games]
+  var GENRES = [
+    ['Sports', 'A sports game', 'seasons, rivals and a scoreboard',
+      "Neo Turf Masters|NBA Jam|Tecmo Bowl|Punch-Out!!|Windjammers|Ice Hockey|California Games|Skate or Die!|Track & Field|Super Dodge Ball|Sensible Soccer|Mutant League Football|Pong|Virtua Tennis|Hot Shots Golf|Tony Hawk's Pro Skater|1080° Snowboarding|Baseball Stars|Blades of Steel|Double Dribble|Arch Rivals|Speedball 2|Kirby's Dream Course|Super Sidekicks|Excitebike|Mario Golf|Mario Tennis|NHL '94|Tecmo Super Bowl|Championship Manager|Sega Bass Fishing|Legend of the River King|Top Skater|Cool Boarders|Wave Race 64"],
+    ['Racing', 'A racing game', 'speed, drifting and photo finishes',
+      "Super Off Road|Road Rash|OutRun|Micro Machines|R.C. Pro-Am|Rock n' Roll Racing|F-Zero|Super Mario Kart|Pole Position|Spy Hunter|Top Gear|Rad Racer|Super Sprint|Daytona USA|Wipeout|Crazy Taxi|Stunt Car Racer|Hang-On|Road Fighter|Lotus Turbo Challenge|Twisted Metal|Ridge Racer|Sega Rally Championship|Gran Turismo|Diddy Kong Racing|Destruction Derby|Stunts|Uniracers|Biker Mice from Mars|Rally-X"],
+    ['Casino & board', 'A casino and board game', 'a bankroll, bets and the luck of the draw',
+      "Vegas Stakes|Caesars Palace|Casino Kid|Solitaire|Minesweeper|Mario Party|Culdcept|Monopoly|Battle Chess|Archon|Itadaki Street|Shanghai|Mahjong|Yahtzee|Risk|Scrabble|Backgammon|Chessmaster|Jones in the Fast Lane"],
+    ['Platformer', 'A platformer', 'tight jumps and stages full of secrets',
+      "Super Mario Bros.|Sonic the Hedgehog|Mega Man 2|Donkey Kong Country|Kirby's Dream Land|Prince of Persia|Earthworm Jim|Rayman|Bubble Bobble|Donkey Kong|Castlevania|Ghosts 'n Goblins|Ninja Gaiden|Yoshi's Island|Super Metroid|Kid Icarus|Bonk's Adventure|Adventure Island|DuckTales|Flashback|Another World|Oddworld: Abe's Oddysee|Crash Bandicoot|Pitfall!|Lode Runner|Manic Miner|Jet Set Willy|Rainbow Islands|Snow Bros.|Wario Land|Alex Kidd in Miracle World|Commander Keen|Jazz Jackrabbit|Klonoa|Castlevania: Symphony of the Night|Metroid|Super Mario World|Super Mario 64|Banjo-Kazooie|Spyro the Dragon|Ice Climber|Mario Bros.|Blaster Master|Rocket Knight Adventures|Ristar|Dynamite Headdy|Kirby Super Star|Mega Man X|The Lost Vikings|Blackthorne|Out of This World|Bionic Commando|Strider|Shinobi|Rolling Thunder|Wonder Boy|Dizzy|Chuckie Egg|Jumpman|Montezuma's Revenge"],
+    ["Shoot 'em up", "A shoot 'em up", 'bullet patterns, power-ups and giant bosses',
+      "R-Type|Gradius|Galaga|Space Invaders|Asteroids|Defender|1942|Raiden|Star Fox|Ikaruga|Radiant Silvergun|Xevious|Life Force|TwinBee|Parodius|Thunder Force IV|Centipede|Missile Command|Tempest|Robotron: 2084|Smash TV|Zaxxon|Galaxian|Sinistar|Tyrian|Raptor: Call of the Shadows|Desert Strike|Choplifter|Thrust|Einhänder|DoDonPachi|Darius|Fantasy Zone|Space Harrier|After Burner|Panzer Dragoon|River Raid|Scramble|Phoenix|Gyruss|Time Pilot|Blazing Lazers|Axelay|U.N. Squadron|Star Soldier|Geometry of the classic twin-stick"],
+    ['Action shooter', 'An action shooter', 'nonstop firepower and co-op chaos',
+      "Metal Slug|Contra|Gunstar Heroes|Commando|Ikari Warriors|Alien Soldier|Sunset Riders|Cabal|Operation Wolf|Duck Hunt|Time Crisis|The House of the Dead|Doom|Wolfenstein 3D|GoldenEye 007|Quake|Duke Nukem 3D|Zombies Ate My Neighbors|Gauntlet|Berzerk|Front Line|Jackal|Mercs|Heavy Barrel|Wild Guns|Turrican|Virtua Cop|Star Wars: Dark Forces|Unreal Tournament|Cannon Fodder"],
+    ['Brawler & fighting', 'A fighting game', 'combos, health bars and special moves',
+      "Streets of Rage 2|Final Fight|Double Dragon|River City Ransom|Golden Axe|Turtles in Time|Street Fighter II|Mortal Kombat|Super Smash Bros.|Tekken 3|The King of Fighters '98|Samurai Shodown|Bushido Blade|Battletoads|Kung-Fu Master|Karateka|International Karate +|Power Stone|Fatal Fury|Virtua Fighter|Soulcalibur|Killer Instinct|Marvel vs. Capcom|Darkstalkers|Yie Ar Kung-Fu|Bad Dudes|Captain Commando|Knights of the Round|The Simpsons Arcade Game|X-Men (arcade)|Guardian Heroes|Pit-Fighter|WWF No Mercy|Pro Wrestling|Saturday Night Slam Masters"],
+    ['Puzzle', 'A puzzle game', 'falling pieces, chain reactions and one-more-go pacing',
+      "Tetris|Bust-a-Move|Dr. Mario|Puyo Puyo|Lemmings|Columns|Sokoban|Tetris Attack|Adventures of Lolo|Boulder Dash|Pipe Mania|The Incredible Machine|Klax|ChuChu Rocket!|Mr. Driller|Marble Madness|Wetrix|Money Puzzle Exchanger|Magical Drop|Devil Dice|Intelligent Qube|Solomon's Key|Kuru Kuru Kururin|Picross|Yoshi's Cookie|Kirby's Avalanche|Lumines-style block dropper|Super Puzzle Fighter II Turbo|Baku Baku Animal|Kickle Cubicle|Mole Mania|Chip's Challenge|Oxyd|Supaplex|Bombuzal|Zoop|Wario's Woods|Pushover|Lode Runner: The Legend Returns|Cool Spot's Spot (board puzzle)"],
+    ['Arcade', 'An arcade score-chaser', 'one-screen stages and a high-score table',
+      "Pac-Man|Dig Dug|Q*bert|Qix|Arkanoid|Breakout|Snake|Frogger|BurgerTime|Pengo|Tapper|Paperboy|Elevator Action|Joust|Rampage|Bomberman|Mappy|Toobin'|Crystal Castles|Ms. Pac-Man|Donkey Kong Jr.|Popeye|Balloon Fight|Lunar Lander|Kaboom!|Circus Charlie|Root Beer Tapper|Marble Madness|Gravitar|Crazy Climber|Ladybug|Mr. Do!|Zoo Keeper|Food Fight|Warlords|Space Cadet Pinball|Devil's Crush|Sonic Spinball|Kirby's Pinball Land|Pokémon Pinball|Pinball Dreams|Pinball Fantasies|Nibbles|SkiFree"],
+    ['RPG', 'An RPG', 'levelling, loot and a party to manage',
+      "Final Fantasy VI|Chrono Trigger|Dragon Quest|EarthBound|Pokémon Red|Secret of Mana|The Legend of Zelda|A Link to the Past|Phantasy Star IV|Ultima IV|Diablo|Rogue|NetHack|Suikoden|Breath of Fire|Monster Rancher|Baldur's Gate|Fallout|Wizardry|Might and Magic|Dungeon Master|Eye of the Beholder|Shiren the Wanderer|Azure Dreams|Super Mario RPG|Illusion of Gaia|Landstalker|Ys|Crystalis|StarTropics|Soul Blazer|ActRaiser|Final Fantasy VII|Link's Awakening|Zelda II|Dragon Warrior Monsters|Lufia II|Terranigma|Secret of Evermore|Xenogears|Paper Mario|Golden Sun|Skies of Arcadia|Grandia|Lunar: Silver Star Story|Ultima Underworld|Betrayal at Krondor|Planescape: Torment|Faxanadu|The Bard's Tale|Pool of Radiance|Vagrant Story|Parasite Eve|Legend of Mana|Beyond Oasis|Alundra|Dark Cloud"],
+    ['Tactics', 'A tactics game', 'grid battles and turn-by-turn decisions',
+      "Fire Emblem|Final Fantasy Tactics|Shining Force|Tactics Ogre|Ogre Battle|X-COM: UFO Defense|Advance Wars|Famicom Wars|Worms|Scorched Earth|Front Mission|Military Madness|Jagged Alliance|Langrisser|Vandal Hearts|Disgaea-style grid battler|Laser Squad|Battle Isle|Panzer General|Master of Monsters|Kartia|Hoshigami|Bahamut Lagoon|Gorillas|Artillery Duel|Rampart"],
+    ['Management sim', 'A management sim', 'budgets, upgrades and things going wrong',
+      "SimCity|Theme Park|Theme Hospital|RollerCoaster Tycoon|Transport Tycoon|The Oregon Trail|SimTower|SimAnt|Railroad Tycoon|Lemonade Stand|Pizza Tycoon|M.U.L.E.|Taipan!|Aerobiz|Mad TV|Capitalism|Airline Tycoon|SimCity 2000|SimFarm|SimEarth|Zoo Tycoon|Dungeon Keeper|Startopia|Caesar III|Pharaoh|Constructor|Industry Giant|Game Dev Story|Detroit|Oil Imperium|Ports of Call|Uncharted Waters|Where in the World Is Carmen Sandiego?|Number Munchers|Hollywood Mogul|Football Manager-style club sim|Sim Golf"],
+    ['Strategy', 'A strategy game', 'base-building and armies to command',
+      "Civilization|Populous|Dune II|Command & Conquer|StarCraft|Warcraft II|Age of Empires|Syndicate|The Settlers|Master of Orion|Heroes of Might and Magic II|Romance of the Three Kingdoms|Nobunaga's Ambition|Gemfire|Sid Meier's Pirates!|Herzog Zwei|Total Annihilation|Lords of the Realm II|Colonization|Master of Magic|Mega Lo Mania|Powermonger|Black & White|Pikmin|North & South|Defender of the Crown|Empire|Stronghold|Cossacks|Z|Myth: The Fallen Lords|Homeworld|Ground Control|KKnD|Genghis Khan|Utopia"],
+    ['Adventure', 'An adventure game', 'dialogue, inventory puzzles and a mystery to crack',
+      "The Secret of Monkey Island|Day of the Tentacle|King's Quest|Zork|Maniac Mansion|Shadowgate|Myst|Snatcher|Phoenix Wright: Ace Attorney|Déjà Vu|Sam & Max Hit the Road|Grim Fandango|Police Quest|Space Quest|Full Throttle|Indiana Jones and the Fate of Atlantis|Loom|Gabriel Knight|Broken Sword|The Dig|Beneath a Steel Sky|Simon the Sorcerer|Discworld|The 7th Guest|Portopia Serial Murder Case|Famicom Detective Club|Policenauts|The Hobbit (text adventure)|Hitchhiker's Guide to the Galaxy|Mystery House|Uninvited|Cosmic Spacehead|Blade Runner|The Last Express|Riven|The Neverhood|Toonstruck|Shenmue"],
+    ['Stealth & horror', 'A stealth and horror game', 'tension, hiding and scarce supplies',
+      "Metal Gear|Metal Gear Solid|Tenchu|Thief: The Dark Project|Clock Tower|Resident Evil|Alone in the Dark|Silent Hill|Sweet Home|Castle Wolfenstein|Syphon Filter|Splatterhouse|Haunted House|Dino Crisis|Fatal Frame|System Shock|Commandos|Bonanza Bros.|Friday the 13th|Maniac Mansion|D|Night Trap-style camera watcher|Luigi's Mansion|Ecco the Dolphin|Uninvited|Echo Night|Hitman: Codename 47|Deus Ex|Elevator Action Returns|Impossible Mission"],
+    ['Life sim', 'A life sim', 'daily routines, friendships and changing seasons',
+      "Harvest Moon|The Sims|Animal Crossing|Tamagotchi|Princess Maker 2|Seaman|Little Computer People|Creatures|Petz|Monster Rancher|Chao Garden|Pokémon Snap|Mario Paint|Alter Ego|Wonder Project J|Digimon World|Chocobo's Dungeon|Jones in the Fast Lane|Hey You, Pikachu!|Rune Factory-style farm and fight|ToeJam & Earl|Shenmue|Tokimeki Memorial|Kudos-style life planner|Catz|SimLife|Viva-style garden builder|Legend of the River King|Boku no Natsuyasumi|Yoshi's Story"],
+    ['Rhythm', 'A rhythm game', 'beats to hit and combos to keep alive',
+      "PaRappa the Rapper|Dance Dance Revolution|Beatmania|Vib-Ribbon|Bust a Groove|Um Jammer Lammy|Samba de Amigo|Space Channel 5|Rez|Guitar Freaks|Pop'n Music|Frequency|Taiko no Tatsujin|Donkey Konga|Gitaroo Man|Mad Maestro|Otocky|Simon|Typing of the Dead|Mario Teaches Typing|Dance Aerobics|Pump It Up|Rhythm Tengoku|Loom|SimTunes"],
+    ['Flight & space', 'A flight and space game', 'open skies, trading runs and dogfights',
+      "Pilotwings|Elite|Wing Commander|Star Raiders|Star Control II|X-Wing|TIE Fighter|Privateer|Frontier: Elite II|Descent|Solar Jetman|Lunar Lander|Flight Simulator|Top Gun|Ace Combat|Star Fox 64|Colony Wars|FreeSpace|Escape Velocity|Starflight|Sundog|Space Rogue|Rescue on Fractalus!|G-Police|Sopwith|Wings|Red Baron|F-15 Strike Eagle|Subspace|Thrust|Spacewar!|Asteroids Deluxe|Star Trek: 25th Anniversary|Homeworld|Oids|Gravity Force"]
+  ];
+  // Drop the few entries that are style descriptions rather than game titles, and any duplicates.
+  var seen = {}, POOL = [];
+  GENRES.forEach(function (g, gi) {
+    g[3].split('|').forEach(function (name) {
+      if (/-style | of the classic |\(board puzzle\)/.test(name) || seen[name]) return;
+      seen[name] = 1; POOL.push({ name: name, g: gi });
+    });
+  });
+
+  var $ = function (id) { return document.getElementById(id); };
+  var elA = $('roll-a'), elB = $('roll-b'), gA = $('genre-a'), gB = $('genre-b'), pitch = $('pitch');
+  var holdA = $('hold-a'), holdB = $('hold-b'), copy = $('copy-btn'), recent = $('recent'), recentBox = $('recent-box');
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var cur = [null, null], timer = null, history = [], kEl = $('roll-k'), todayBtn = $('today-btn');
+  $('pool-note').textContent = 'Drawing from ' + POOL.length + ' classics across ' + GENRES.length + ' genres. The daily theme changes at midnight UTC.';
+  holdA.disabled = holdB.disabled = true;
+
+  function rand() { return POOL[Math.floor(Math.random() * POOL.length)]; }
+  function pick(other) { // a game from a different genre than the other reel
+    var v, tries = 0;
+    do { v = rand(); tries++; } while (other && tries < 200 && (v.g === other.g || v.name === other.name));
+    return v;
+  }
+  function line(a, b) { return GENRES[a.g][1] + ' with ' + GENRES[b.g][2] + '.'; }
+  // Daily theme: seeded by the UTC date, so everyone sees the same pair on the same day.
+  function daily() {
+    var d = new Date(), seed = d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
+    function r() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+    var a = POOL[Math.floor(r() * POOL.length)], b;
+    do { b = POOL[Math.floor(r() * POOL.length)]; } while (b.g === a.g);
+    var M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return { a: a, b: b, label: d.getUTCDate() + ' ' + M[d.getUTCMonth()] + ' ' + d.getUTCFullYear() };
+  }
+  function showDaily() {
+    var t = daily(); cur = [t.a, t.b];
+    [holdA, holdB].forEach(function (h) { if (held(h)) h.click(); });
+    show(true); kEl.textContent = "Today's Retro DNA \u00b7 " + t.label; todayBtn.hidden = true;
+  }
+  function show(isDaily) {
+    var a = cur[0], b = cur[1];
+    elA.textContent = a.name; elB.textContent = b.name;
+    gA.textContent = GENRES[a.g][0]; gB.textContent = GENRES[b.g][0];
+    pitch.textContent = 'Pitch: ' + line(a, b);
+    copy.disabled = holdA.disabled = holdB.disabled = false;
+    if (isDaily) return;
+    kEl.textContent = 'Practice roll'; todayBtn.hidden = false;
+    history.unshift(a.name + ' meets ' + b.name);
+    history = history.slice(0, 5);
+    recent.textContent = '';
+    history.forEach(function (h, i) { var li = document.createElement('li'); if (i === 0) { var s = document.createElement('b'); s.textContent = h; li.appendChild(s); } else li.textContent = h; recent.appendChild(li); });
+    recentBox.hidden = false;
+  }
+  function held(b) { return b.getAttribute('aria-pressed') === 'true'; }
+  [holdA, holdB].forEach(function (b) {
+    b.addEventListener('click', function () { var on = !held(b); b.setAttribute('aria-pressed', on); b.textContent = on ? 'Held' : 'Hold'; });
+  });
+  btn.addEventListener('click', function () {
+    if (timer) return;
+    var keepA = held(holdA) && cur[0], keepB = held(holdB) && cur[1];
+    if (keepA && keepB) { holdB.click(); keepB = null; } // holding both would roll nothing
+    var a = keepA || pick(keepB || null), b = keepB || pick(a), n = 0;
+    cur = [a, b];
+    if (still) { show(); return; }
+    copy.disabled = true;
+    timer = setInterval(function () {
+      n++;
+      if (!keepA) { var ta = n < 10 ? rand() : a; elA.textContent = ta.name; gA.textContent = GENRES[ta.g][0]; }
+      if (!keepB) { var tb = n < 16 ? rand() : b; elB.textContent = tb.name; gB.textContent = GENRES[tb.g][0]; }
+      if (n >= 16) { clearInterval(timer); timer = null; show(); }
+    }, 70);
+  });
+  todayBtn.addEventListener('click', function () { if (!timer) showDaily(); });
+  showDaily();
+  copy.addEventListener('click', function () {
+    if (!cur[0]) return;
+    var text = 'Retro DNA: ' + cur[0].name + ' meets ' + cur[1].name + '. ' + line(cur[0], cur[1]);
+    var done = function (ok) { copy.textContent = ok ? 'Copied' : 'Copy failed'; setTimeout(function () { copy.textContent = 'Copy idea'; }, 1400); };
+    try { navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); }); } catch (e) { done(false); }
+  });
 })();
 </script>
 </body>
