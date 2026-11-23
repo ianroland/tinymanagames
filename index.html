@@ -232,9 +232,17 @@ button.btn { cursor: pointer; font-family: var(--display); }
 
 /* Community Mana Jams: shared games ranked by jam jars */
 .community { background: var(--ink-2); }
-.community .grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: start; margin-top: 32px; }
-.jam-list { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--line); }
-.jam-list li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 14px 0; border-bottom: 2px solid var(--line); }
+.community .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: stretch; margin-top: 32px; }
+.board { border: 3px solid var(--cream); background: var(--ink); box-shadow: 8px 8px 0 var(--sun-gold); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+.board h3 { font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.board h3 small { font-family: var(--body); font-weight: 600; font-size: 12px; color: var(--muted); }
+.jam-list li.open { opacity: .55; }
+.jam-list li.open .slot-name { font-family: var(--display); font-size: 15px; color: var(--muted); }
+.jam-list li.open .jar { border-style: dashed; cursor: default; }
+.share .pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 480px) { .share .pair { grid-template-columns: minmax(0, 1fr); } }
+.jam-list { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--line); flex: 1; }
+.jam-list li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 11px 0; border-bottom: 2px solid var(--line); }
 .jam-list .rank { font-family: var(--display); font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .jam-list li:first-child .rank { color: var(--sun-gold); }
 .jam-list a { font-family: var(--display); font-weight: 700; font-size: 17px; color: var(--cream); text-decoration: none; overflow-wrap: anywhere; }
@@ -246,7 +254,7 @@ button.btn { cursor: pointer; font-family: var(--display); }
 .jar canvas { width: 24px; height: 28px; image-rendering: pixelated; }
 .jar:hover { border-color: var(--cream); }
 .jar[aria-pressed="true"] { border-color: var(--sun-red); color: var(--sun-gold); cursor: default; }
-.jam-status { color: var(--muted); margin: 0; padding: 14px 0; }
+.jam-status { color: var(--muted); margin: 0; font-size: 14px; }
 .share { border: 3px solid var(--cream); background: var(--ink); box-shadow: 8px 8px 0 var(--sun-red); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
 .share h3 { font-size: 20px; }
 .share label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 600; color: var(--muted); }
@@ -492,21 +500,24 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     <h2>Community Mana Jams</h2>
     <p class="intro" style="margin-bottom:0">Built a game from a Retro DNA theme? Share the link. Approved games are listed here and ranked by jam jars, and the best may get a feature in the Tiny Arcade.</p>
     <div class="grid">
-      <div>
+      <div class="board">
+        <h3>Jam board <small>Ranked by jam jars</small></h3>
         <ol class="jam-list" id="jam-list"></ol>
         <p class="jam-status" id="jam-status" aria-live="polite">Loading the jams&hellip;</p>
       </div>
 
       <form class="share" id="share-form" novalidate>
         <h3>Share your jam</h3>
-        <label for="jam-title">Game name
-          <input id="jam-title" name="title" type="text" maxlength="60" autocomplete="off" required>
-        </label>
+        <div class="pair">
+          <label for="jam-title">Game name
+            <input id="jam-title" name="title" type="text" maxlength="60" autocomplete="off" required>
+          </label>
+          <label for="jam-dev">Your name or handle
+            <input id="jam-dev" name="dev_name" type="text" maxlength="40" autocomplete="nickname" required>
+          </label>
+        </div>
         <label for="jam-url">Link to play
           <input id="jam-url" name="url" type="url" maxlength="200" placeholder="https://" autocomplete="off" required>
-        </label>
-        <label for="jam-dev">Your name or handle
-          <input id="jam-dev" name="dev_name" type="text" maxlength="40" autocomplete="nickname" required>
         </label>
         <label for="jam-dna">Retro DNA theme
           <span class="row">
@@ -846,10 +857,11 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     r(3, 5, 1, 6, 'rgba(255,255,255,.55)');                                          // shine
   }
 
+  var SLOTS = 5;
   function render(rows) {
     list.textContent = '';
-    if (!rows.length) { status.textContent = 'No jams yet. Share yours and be the first on the board.'; status.hidden = false; return; }
-    status.hidden = true;
+    status.hidden = rows.length > 0;
+    if (!rows.length) status.textContent = 'No jams yet. Share yours and be the first on the board.';
     rows.forEach(function (e, i) {
       var li = document.createElement('li');
       var rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
@@ -882,11 +894,24 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       });
       li.appendChild(rank); li.appendChild(mid); li.appendChild(jar); list.appendChild(li);
     });
+    for (var k = rows.length; k < SLOTS; k++) {                // open slots keep the board full
+      var li = document.createElement('li'); li.className = 'open';
+      var rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = (k + 1 < 10 ? '0' : '') + (k + 1);
+      var mid = document.createElement('span');
+      var nm = document.createElement('span'); nm.className = 'slot-name'; nm.textContent = 'Open slot';
+      var by = document.createElement('span'); by.className = 'by'; by.textContent = 'Your jam could be here';
+      mid.appendChild(nm); mid.appendChild(by);
+      var jar = document.createElement('span'); jar.className = 'jar'; jar.setAttribute('aria-hidden', 'true');
+      var cv = document.createElement('canvas'); cv.width = 12; cv.height = 14; drawJar(cv, false);
+      var n = document.createElement('span'); n.textContent = '0';
+      jar.appendChild(cv); jar.appendChild(n);
+      li.appendChild(rank); li.appendChild(mid); li.appendChild(jar); list.appendChild(li);
+    }
   }
   function load() {
     call('/jam_entries?select=id,title,url,dev_name,dna,jars&status=eq.approved&order=jars.desc,created_at.asc&limit=50')
       .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
-      .then(render, function () { status.hidden = false; status.textContent = 'The jam board could not load right now. Try again in a bit.'; });
+      .then(render, function () { render([]); status.hidden = false; status.textContent = 'The jam board could not load right now. Try again in a bit.'; });
   }
   load();
 
