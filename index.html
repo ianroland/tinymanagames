@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiny Mana Studios</title>
+<meta name="description" content="Tiny Mana Studios makes retro games for the browser, built with AI agents on HTML, CSS and JavaScript.">
+<link rel="canonical" href="https://tinymana.games/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tiny Mana Studios">
+<meta property="og:title" content="Tiny Mana Studios">
+<meta property="og:description" content="Retro games for the browser, built with AI agents on HTML, CSS and JavaScript.">
+<meta property="og:url" content="https://tinymana.games/">
+<meta property="og:image" content="https://tinymana.games/ryan-title.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0c14">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one night-sky column. The logo's five sunset stripes are the only
+   decoration, reused as the horizon rule between sections. Single dark theme by choice. */
+:root {
+  color-scheme: dark;
+  --ink: #0a0c14;        /* logo night sky */
+  --ink-2: #131726;      /* raised panels */
+  --line: #2a3048;       /* hairlines, navy-biased grey */
+  --cream: #f7f0e1;      /* logo cream */
+  --muted: #a9adc0;
+  --sun-red: #d93a1a;
+  --sun-orange: #f47a0f;
+  --sun-gold: #fbb813;
+  --fairway: #1f8a3b;
+  --display: "Silkscreen", "Courier New", monospace;
+  --body: "Montserrat", "Avenir Next", "Segoe UI", sans-serif;
+  --wrap: 1080px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--cream);
+  font-family: var(--body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--sun-gold); }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--sun-gold); outline-offset: 3px; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+
+/* Shared type */
+h1, h2, h3 { font-family: var(--display); font-weight: 700; line-height: 1.1; margin: 0; text-wrap: balance; }
+.label {
+  font-family: var(--body); font-weight: 600; font-size: 12px;
+  letter-spacing: .32em; text-transform: uppercase; color: var(--sun-gold);
+  display: flex; align-items: center; gap: 14px; margin: 0;
+}
+.label::after { content: ""; height: 3px; width: 56px; background: var(--sun-gold); }
+
+/* Header */
+.top { position: relative; z-index: 2; }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 20px; padding-bottom: 20px; flex-wrap: wrap; }
+.top img { width: 210px; height: auto; image-rendering: auto; }
+.top nav { display: flex; gap: 26px; flex-wrap: wrap; }
+.top nav a {
+  font-family: var(--display); font-size: 14px; color: var(--cream); text-decoration: none;
+  padding: 6px 0; border-bottom: 3px solid transparent;
+}
+.top nav a:hover { border-bottom-color: var(--sun-orange); }
+
+/* Tiny Arcade: game-select menu in the nav, links out to each game */
+.top .wrap { position: relative; }
+.top nav { align-items: center; }
+.arcade summary {
+  list-style: none; cursor: pointer; user-select: none;
+  font-family: var(--display); font-weight: 700; font-size: 14px;
+  color: var(--ink); background: var(--sun-gold); padding: 6px 12px;
+  box-shadow: 3px 3px 0 var(--sun-red);
+}
+.arcade summary::-webkit-details-marker { display: none; }
+.arcade summary::after { content: " \25BE"; }
+.arcade[open] summary { background: var(--cream); }
+.arcade-menu {
+  position: absolute; z-index: 10; right: 24px; top: calc(100% - 6px);
+  width: min(420px, calc(100% - 48px));
+  background: var(--ink-2); border: 3px solid var(--cream); box-shadow: 6px 6px 0 var(--sun-red);
+  padding: 8px; display: flex; flex-direction: column; gap: 4px;
+}
+.arcade-h {
+  margin: 0; padding: 6px 8px 10px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  font-family: var(--display); font-size: 12px; color: var(--sun-gold); border-bottom: 2px solid var(--line);
+}
+.arcade-h span + span { color: var(--muted); }
+.slot {
+  display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 12px; align-items: center;
+  padding: 8px; text-decoration: none; color: var(--cream); border: 2px solid transparent;
+}
+.slot img, .slot .blank { width: 72px; height: 46px; object-fit: cover; border: 2px solid var(--line); }
+.slot .blank { display: grid; place-items: center; font-family: var(--display); color: var(--muted); background: var(--ink); }
+.slot-t { display: flex; flex-direction: column; min-width: 0; }
+.slot b { font-family: var(--display); font-size: 14px; line-height: 1.25; }
+.slot small { font-size: 12px; color: var(--muted); }
+.slot em { font-style: normal; font-family: var(--display); font-size: 12px; padding: 4px 8px; border: 2px solid var(--line); color: var(--muted); white-space: nowrap; }
+a.slot em { background: var(--sun-gold); color: var(--ink); border-color: var(--sun-gold); font-weight: 700; }
+a.slot:hover, a.slot:focus-visible { border-color: var(--sun-gold); background: var(--ink); }
+.slot.off { opacity: .6; }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; }
+#stars { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
+.hero main.wrap {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: center;
+  padding-top: 40px; padding-bottom: 72px;
+}
+.hero h1 { font-size: clamp(34px, 5.4vw, 62px); letter-spacing: -.01em; margin-top: 22px; }
+.hero h1 em { font-style: normal; color: var(--sun-gold); }
+.hero p.lede { max-width: 34em; color: var(--muted); font-size: 18px; margin: 22px 0 30px; }
+.badge { width: min(100%, 380px); justify-self: center; filter: drop-shadow(0 0 60px rgba(244, 122, 15, .22)); }
+.cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+/* Buttons: hard pixel shadow, no radius */
+.btn {
+  font-family: var(--display); font-weight: 700; font-size: 16px; text-decoration: none;
+  display: inline-block; padding: 14px 22px; border: 3px solid var(--cream);
+  color: var(--ink); background: var(--sun-gold);
+  box-shadow: 5px 5px 0 var(--sun-red);
+  transition: transform .08s steps(2), box-shadow .08s steps(2);
+}
+.btn:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--sun-red); }
+.btn:active { transform: translate(5px, 5px); box-shadow: 0 0 0 var(--sun-red); }
+.btn.ghost { background: transparent; color: var(--cream); box-shadow: 5px 5px 0 var(--line); }
+.btn.ghost:hover { box-shadow: 3px 3px 0 var(--line); }
+
+/* Horizon: the sun's stripes, flattened */
+.horizon { height: 30px; background: linear-gradient(
+  var(--sun-red) 0 20%, var(--sun-orange) 20% 40%, #e2541a 40% 60%, #f98f12 60% 80%, var(--sun-gold) 80% 100%); }
+
+/* Builds */
+section { padding: 80px 0; }
+section h2 { font-size: clamp(26px, 3.6vw, 40px); margin: 18px 0 12px; }
+section > .wrap > p.intro { color: var(--muted); max-width: 38em; margin: 0 0 40px; }
+
+.build { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+.screen {
+  position: relative; display: block; border: 3px solid var(--cream); background: #000;
+  box-shadow: 10px 10px 0 var(--sun-red); text-decoration: none; overflow: hidden;
+}
+.screen img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.screen::after { /* faint scanlines */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 3px, rgba(0,0,0,.13) 3px 4px);
+}
+.screen .play {
+  position: absolute; left: 14px; bottom: 14px; z-index: 1;
+  font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink);
+  background: var(--sun-gold); border: 3px solid var(--ink); padding: 6px 12px;
+}
+.screen:hover .play { background: var(--cream); }
+
+.meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; font-family: var(--display); font-size: 13px; }
+.meta .no { color: var(--muted); }
+.pill { padding: 3px 10px; border: 2px solid var(--fairway); color: #7be495; display: inline-flex; align-items: center; gap: 8px; }
+.pill i { width: 8px; height: 8px; background: #7be495; display: block; animation: blink 1.2s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+.build h3 { font-size: clamp(24px, 3vw, 34px); margin: 16px 0 6px; }
+.build .tag { color: var(--sun-gold); font-weight: 600; margin: 0 0 14px; }
+.dna {
+  display: inline-flex; align-items: center; gap: 14px; max-width: 100%;
+  margin: 0 0 20px; padding: 8px 22px 8px 10px;
+  border: 3px solid var(--cream); border-radius: 999px; background: var(--ink-2);
+  box-shadow: 4px 4px 0 var(--sun-orange);
+}
+.dna .helix { width: 96px; height: 42px; flex: none; image-rendering: pixelated; background: var(--ink); border-radius: 999px; border: 2px solid var(--line); }
+.dna .dna-t { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dna .dna-k { font-family: var(--body); font-weight: 700; font-size: 10px; letter-spacing: .3em; text-transform: uppercase; color: var(--sun-gold); }
+.dna .dna-v { font-family: var(--display); font-size: 14px; line-height: 1.3; color: var(--cream); }
+.dna .dna-v i { font-style: normal; color: var(--sun-orange); padding: 0 3px; }
+.next .dna { margin: 0; box-shadow: 4px 4px 0 var(--line); border-color: var(--line); }
+@media (max-width: 420px) { .dna { border-radius: 26px; } .dna .helix { width: 64px; } }
+.build p { margin: 0 0 18px; color: var(--cream); max-width: 34em; }
+.stats { list-style: none; padding: 0; margin: 0 0 26px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 2px solid var(--line); }
+.stats li { padding: 12px 0; border-bottom: 2px solid var(--line); font-size: 14px; color: var(--muted); }
+.stats li:nth-child(odd) { padding-right: 14px; }
+.stats b { display: block; font-family: var(--display); font-size: 22px; color: var(--cream); font-variant-numeric: tabular-nums; }
+.url { font-family: var(--display); font-size: 14px; margin-left: 4px; }
+
+.build + .build { margin-top: 72px; }
+.build.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); }
+.build.flip .screen { order: 2; box-shadow: -10px 10px 0 var(--sun-gold); }
+.screen.r32 img { aspect-ratio: 3 / 2; }
+.pill.wip { border-color: var(--sun-orange); color: var(--sun-gold); }
+.pill.wip i { background: var(--sun-gold); }
+.next {
+  margin-top: 56px; border: 3px dashed var(--line); padding: 22px 24px;
+  display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; color: var(--muted);
+}
+.next b { font-family: var(--display); color: var(--cream); font-size: 15px; }
+
+/* How we build */
+.how { background: var(--ink-2); }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 36px; }
+.cols article { border-top: 6px solid var(--c); padding-top: 18px; }
+.cols h3 { font-size: 20px; margin-bottom: 10px; }
+.cols p { margin: 0; color: var(--muted); font-size: 16px; }
+.stack { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 40px; font-family: var(--display); font-size: 14px; }
+.stack span { border: 2px solid var(--line); padding: 6px 12px; color: var(--cream); background: var(--ink); }
+
+/* Footer */
+footer { padding: 48px 0 56px; }
+footer .wrap { display: flex; gap: 28px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+footer img { width: 180px; }
+footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
+
+@media (max-width: 820px) {
+  .hero main.wrap, .build, .build.flip { grid-template-columns: minmax(0, 1fr); }
+  .build.flip .screen { order: 0; box-shadow: 6px 6px 0 var(--sun-gold); }
+  .hero main.wrap { padding-bottom: 56px; gap: 32px; }
+  .badge { order: -1; width: min(70%, 280px); }
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  section { padding: 60px 0; }
+  .screen { box-shadow: 6px 6px 0 var(--sun-red); }
+}
+@media (max-width: 420px) {
+  .wrap { padding: 0 16px; }
+  .top img { width: 170px; }
+  .top nav { gap: 18px; }
+  .arcade-menu { right: 16px; width: calc(100% - 32px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .pill i { animation: none; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="stars" aria-hidden="true"></canvas>
+
+  <header class="top">
+    <div class="wrap">
+      <a href="#top" aria-label="Tiny Mana Studios, home"><img src="wordmark.png" alt="Tiny Mana Studios" width="900" height="230"></a>
+      <nav aria-label="Sections">
+        <a href="#builds">Builds</a>
+        <a href="#how">How we build</a>
+        <details class="arcade" id="arcade">
+          <summary>Tiny Arcade</summary>
+          <div class="arcade-menu">
+            <p class="arcade-h"><span>Select game</span><span>Plays in your browser</span></p>
+            <a class="slot" href="https://www.ryansgolf.app" target="_blank" rel="noopener">
+              <img src="ryan-title.jpg" alt="" width="1280" height="720">
+              <span class="slot-t"><b>Ryan's Road to the LPGA</b><small>Golf RPG</small></span>
+              <em>&#9654; Play</em>
+            </a>
+            <div class="slot off">
+              <img src="aussie8-title.jpg" alt="" width="1200" height="800">
+              <span class="slot-t"><b>Aussie8</b><small>Off-road racing</small></span>
+              <em>Soon</em>
+            </div>
+            <div class="slot off">
+              <span class="blank" aria-hidden="true">?</span>
+              <span class="slot-t"><b>Build 03</b><small>Insert coin</small></span>
+              <em>Soon</em>
+            </div>
+          </div>
+        </details>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top" class="wrap">
+    <div>
+      <p class="label">Retro games for the browser</p>
+      <h1>Pixel games, built by <em>AI agents</em>, shipped on the web stack.</h1>
+      <p class="lede">Tiny Mana Studios makes 32-bit-style games that open in a browser tab. Each one is an agentic build: AI agents write the code under human direction, mostly in plain HTML, CSS and JavaScript.</p>
+      <div class="cta-row">
+        <a class="btn" href="https://www.ryansgolf.app" target="_blank" rel="noopener">&#9654; Play the first build</a>
+        <a class="btn ghost" href="#builds">See the builds</a>
+      </div>
+    </div>
+    <img class="badge" src="badge.png" alt="Tiny Mana Studios badge: a pixel wizard raising a glowing staff in front of a striped sunset" width="640" height="640">
+  </main>
+</div>
+
+<div class="horizon" role="presentation"></div>
+
+<section id="builds">
+  <div class="wrap">
+    <p class="label">Builds</p>
+    <h2>Now playing</h2>
+    <p class="intro">Every build is free to play and runs in the browser. Each one lists its Retro DNA: the classics it descends from. One is live so far.</p>
+
+    <div class="build">
+      <a class="screen" href="https://www.ryansgolf.app" target="_blank" rel="noopener">
+        <img src="ryan-title.jpg" alt="Title screen of Ryan's Road to the LPGA: a pixel-art golfer mid-swing above a coastal course at sunset, with the prompt Press Enter" width="1280" height="720">
+        <span class="play">&#9654; Press Enter</span>
+      </a>
+
+      <div>
+        <div class="meta">
+          <span class="no">Build 01</span>
+          <span class="pill"><i></i>Live</span>
+        </div>
+        <h3>Ryan's Road to the LPGA</h3>
+        <p class="tag">A 32-bit golf RPG</p>
+        <div class="dna">
+          <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
+          <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">Neo Turf Masters <i>meets</i> Vegas Stakes</span></div>
+        </div>
+        <p>Train Ryan from an 18-year-old amateur to the LPGA Tour. Play arcade golf with a two-click swing, draw and fade, wind and sloping greens. Between rounds, train, work shifts, sign sponsors and try not to lose it all at the casino.</p>
+        <ul class="stats">
+          <li><b>6</b>courses, home muni to Highland Ridge</li>
+          <li><b>3</b>casinos to unlock</li>
+          <li><b>36</b>greyhounds at the track</li>
+          <li><b>2</b>clicks per swing</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn" href="https://www.ryansgolf.app" target="_blank" rel="noopener">&#9654; Play now</a>
+          <a class="url" href="https://www.ryansgolf.app" target="_blank" rel="noopener">www.ryansgolf.app</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="build flip">
+      <div class="screen r32">
+        <img src="aussie8-title.jpg" alt="Title screen of Aussie8: a white, green and gold number 8 off-road truck leading two rivals down a red dirt track at dusk, with Uluru on the horizon and the prompt Press Start" width="1200" height="800">
+      </div>
+
+      <div>
+        <div class="meta">
+          <span class="no">Build 02</span>
+          <span class="pill wip"><i></i>In the workshop</span>
+        </div>
+        <h3>Aussie8</h3>
+        <p class="tag">Arcade off-road racing in the outback</p>
+        <div class="dna">
+          <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
+          <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">Super Off Road <i>meets</i> Road Rash</span></div>
+        </div>
+        <p>Big trucks, red dirt and floodlights, with Uluru on the horizon. Truck number 8 is on the grid. A play link lands here when it is ready to race.</p>
+      </div>
+    </div>
+
+    <div class="next">
+      <b>Build 03</b>
+      <span>Not started yet. The next cartridge shows up here.</span>
+      <div class="dna">
+          <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
+          <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">??? <i>meets</i> ???</span></div>
+        </div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="how">
+  <div class="wrap">
+    <p class="label">How we build</p>
+    <h2>Small studio, three rules</h2>
+    <div class="cols">
+      <article style="--c: var(--sun-red)">
+        <h3>Agentic builds</h3>
+        <p>AI agents do the building: code, systems, iteration. A human sets the direction, plays every version and decides what ships.</p>
+      </article>
+      <article style="--c: var(--sun-orange)">
+        <h3>Web stack first</h3>
+        <p>Mainly HTML, CSS and JavaScript. No install and no launcher. Open the link and play with keyboard, controller or touch.</p>
+      </article>
+      <article style="--c: var(--sun-gold)">
+        <h3>Retro on purpose</h3>
+        <p>Chunky pixels, bright palettes and arcade feel from the 32-bit era, with the depth of a modern career game underneath.</p>
+      </article>
+    </div>
+    <div class="stack" aria-label="Tech">
+      <span>HTML</span><span>CSS</span><span>JavaScript</span><span>AI agents</span><span>Runs in your browser</span>
+    </div>
+  </div>
+</section>
+
+<div class="horizon" role="presentation"></div>
+
+<footer>
+  <div class="wrap">
+    <img src="wordmark.png" alt="Tiny Mana Studios" width="900" height="230">
+    <p>&copy; 2026 Tiny Mana Studios. Ryan's Road to the LPGA is a free fan-made game. It is not affiliated with or endorsed by the LPGA, the Epson Tour or any brand shown, and all in-game money is fictional.</p>
+  </div>
+</footer>
+
+<script>
+// Pixel starfield behind the hero: plus-shaped sparkles like the one on the wizard's staff.
+(function () {
+  var c = document.getElementById('stars'), x = c.getContext('2d');
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PX = 4, stars = [], w = 0, h = 0;
+  function seed() {
+    var r = c.getBoundingClientRect();
+    w = c.width = Math.max(1, Math.round(r.width / PX));
+    h = c.height = Math.max(1, Math.round(r.height / PX));
+    stars = [];
+    var n = Math.round(w * h / 420);
+    for (var i = 0; i < n; i++) stars.push({
+      x: Math.floor(Math.random() * w), y: Math.floor(Math.random() * h),
+      big: Math.random() < 0.16, gold: Math.random() < 0.3,
+      p: Math.random() * 6.28, s: 0.4 + Math.random() * 1.2
+    });
+    draw(0);
+  }
+  function draw(t) {
+    x.clearRect(0, 0, w, h);
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i], a = still ? 0.6 : 0.35 + 0.65 * Math.abs(Math.sin(s.p + t * 0.001 * s.s));
+      x.globalAlpha = a * (s.big ? 0.9 : 0.55);
+      x.fillStyle = s.gold ? '#fbb813' : '#f7f0e1';
+      x.fillRect(s.x, s.y, 1, 1);
+      if (s.big && a > 0.6) { x.fillRect(s.x - 1, s.y, 3, 1); x.fillRect(s.x, s.y - 1, 1, 3); }
+    }
+  }
+  function loop(t) { draw(t); requestAnimationFrame(loop); }
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(seed, 150); });
+  seed();
+  if (!still) requestAnimationFrame(loop);
+})();
+
+// 32-bit DNA strand: a rotating pixel double helix inside each Retro DNA pill.
+(function () {
+  var cs = document.querySelectorAll('canvas.helix'); if (!cs.length) return;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var PAIRS = [['#fbb813', '#4aa8ff'], ['#ff5fa2', '#7be495']];
+  function draw(c, t) {
+    var x = c.getContext('2d'), W = c.width, H = c.height, mid = (H - 2) / 2, A = mid - 1;
+    x.clearRect(0, 0, W, H);
+    var pts = [];
+    for (var i = 0; i < W; i++) {
+      var ph = i * 0.42 - t * 0.003, s = Math.sin(ph);
+      pts.push({ a: Math.round(mid + A * s), b: Math.round(mid - A * s), front: Math.cos(ph) > 0 });
+    }
+    for (i = 1; i < W; i += 3) { // base-pair rungs, two colours each
+      var p = pts[i], top = Math.min(p.a, p.b), bot = Math.max(p.a, p.b), half = Math.round((top + bot) / 2);
+      var pair = PAIRS[((i - 1) / 3) % 2];
+      if (bot - top < 3) continue;
+      x.fillStyle = pair[p.a < p.b ? 0 : 1]; x.fillRect(i, top + 2, 1, half - top - 1);
+      x.fillStyle = pair[p.a < p.b ? 1 : 0]; x.fillRect(i, half + 1, 1, bot - half - 1);
+    }
+    for (var pass = 0; pass < 2; pass++) for (i = 0; i < W; i++) { // back strand first, then front
+      p = pts[i];
+      var aFront = p.front;
+      if ((pass === 1) === aFront) { x.fillStyle = pass ? '#f7f0e1' : '#8d8a80'; x.fillRect(i, p.a, 1, 2); }
+      if ((pass === 1) !== aFront) { x.fillStyle = pass ? '#f47a0f' : '#8a3d12'; x.fillRect(i, p.b, 1, 2); }
+    }
+  }
+  function frame(t) { for (var i = 0; i < cs.length; i++) draw(cs[i], t + i * 900); if (!still) requestAnimationFrame(frame); }
+  frame(0);
+})();
+
+// Tiny Arcade menu: close on outside click or Escape.
+(function () {
+  var d = document.getElementById('arcade'); if (!d) return;
+  document.addEventListener('click', function (e) { if (d.open && !d.contains(e.target)) d.open = false; });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && d.open) { d.open = false; d.querySelector('summary').focus(); } });
+})();
+</script>
+</body>
+</html>
