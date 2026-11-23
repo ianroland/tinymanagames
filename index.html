@@ -236,6 +236,12 @@ button.btn { cursor: pointer; font-family: var(--display); }
 .board { border: 3px solid var(--cream); background: var(--ink); box-shadow: 8px 8px 0 var(--sun-gold); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
 .board h3 { font-size: 20px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .board h3 small { font-family: var(--body); font-weight: 600; font-size: 12px; color: var(--muted); }
+.board-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 28px 8px; border-top: 2px solid var(--line); }
+.board-empty[hidden] { display: none; }
+.board-empty canvas { width: 96px; height: 112px; image-rendering: pixelated; opacity: .9; }
+.board-empty strong { font-family: var(--display); font-size: clamp(30px, 4.4vw, 46px); line-height: 1; color: var(--cream); }
+.board-empty span { color: var(--muted); font-size: 15px; max-width: 22em; }
+.jam-list[hidden] { display: none; }
 .jam-list li.open { opacity: .55; }
 .jam-list li.open .slot-name { font-family: var(--display); font-size: 15px; color: var(--muted); }
 .jam-list li.open .jar { border-style: dashed; cursor: default; }
@@ -503,6 +509,11 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <div class="board">
         <h3>Jam board <small>Ranked by jam jars</small></h3>
         <ol class="jam-list" id="jam-list"></ol>
+        <div class="board-empty" id="jam-empty" hidden>
+          <canvas id="jam-empty-jar" width="12" height="14" aria-hidden="true"></canvas>
+          <strong>No jams yet</strong>
+          <span id="jam-empty-text">Share yours and be the first on the board.</span>
+        </div>
         <p class="jam-status" id="jam-status" aria-live="polite">Loading the jams&hellip;</p>
       </div>
 
@@ -857,11 +868,12 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     r(3, 5, 1, 6, 'rgba(255,255,255,.55)');                                          // shine
   }
 
-  var SLOTS = 5;
+  var SLOTS = 5, empty = document.getElementById('jam-empty');
   function render(rows) {
     list.textContent = '';
-    status.hidden = rows.length > 0;
-    if (!rows.length) status.textContent = 'No jams yet. Share yours and be the first on the board.';
+    status.hidden = true;
+    var none = !rows.length; empty.hidden = !none; list.hidden = none;
+    if (none) { drawJar(document.getElementById('jam-empty-jar'), false); return; }
     rows.forEach(function (e, i) {
       var li = document.createElement('li');
       var rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
@@ -911,7 +923,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   function load() {
     call('/jam_entries?select=id,title,url,dev_name,dna,jars&status=eq.approved&order=jars.desc,created_at.asc&limit=50')
       .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
-      .then(render, function () { render([]); status.hidden = false; status.textContent = 'The jam board could not load right now. Try again in a bit.'; });
+      .then(render, function () { render([]); document.getElementById('jam-empty-text').textContent = 'The jam board could not load right now. Try again in a bit.'; });
   }
   load();
 
