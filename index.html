@@ -868,12 +868,14 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     r(3, 5, 1, 6, 'rgba(255,255,255,.55)');                                          // shine
   }
 
-  var SLOTS = 5, empty = document.getElementById('jam-empty');
+  var SLOTS = 5, BIG_EMPTY = false, empty = document.getElementById('jam-empty');
   function render(rows) {
     list.textContent = '';
-    status.hidden = true;
-    var none = !rows.length; empty.hidden = !none; list.hidden = none;
-    if (none) { drawJar(document.getElementById('jam-empty-jar'), false); return; }
+    // Empty board: open "save slots" by default; set BIG_EMPTY to true for one large "No jams yet" panel instead.
+    var none = !rows.length, big = none && BIG_EMPTY;
+    empty.hidden = !big; list.hidden = big; status.hidden = !none || big;
+    if (none) status.textContent = 'No jams yet. Share yours and be the first on the board.';
+    if (big) { drawJar(document.getElementById('jam-empty-jar'), false); return; }
     rows.forEach(function (e, i) {
       var li = document.createElement('li');
       var rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
@@ -923,7 +925,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   function load() {
     call('/jam_entries?select=id,title,url,dev_name,dna,jars&status=eq.approved&order=jars.desc,created_at.asc&limit=50')
       .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
-      .then(render, function () { render([]); document.getElementById('jam-empty-text').textContent = 'The jam board could not load right now. Try again in a bit.'; });
+      .then(render, function () { render([]); status.hidden = false; status.textContent = 'The jam board could not load right now. Try again in a bit.'; });
   }
   load();
 
