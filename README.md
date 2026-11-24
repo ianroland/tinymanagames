@@ -14,6 +14,7 @@ A single static page with no build step.
 | `favicon.png` | Browser tab icon |
 | `ryan-title.jpg` | Title screen for Ryan's Road to the LPGA |
 | `aussie8-title.jpg` | Title screen for Aussie8 |
+| `typlympics-title.jpg` | Title screen for Typlympics |
 
 ## Run it locally
 
