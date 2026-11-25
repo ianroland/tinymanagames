@@ -16,6 +16,7 @@ A single static page with no build step.
 | `aussie8-title.jpg` | Title screen for Aussie8 |
 | `typlympics-title.jpg` | Title screen for Typlympics |
 | `beerleague-title.jpg` | Title art for Beer League Hockey |
+| `pickleball-title.jpg` | Title screen for Pickleball Dynasty |
 
 ## Run it locally
 
