@@ -15,6 +15,7 @@ A single static page with no build step.
 | `ryan-title.jpg` | Title screen for Ryan's Road to the LPGA |
 | `aussie8-title.jpg` | Title screen for Aussie8 |
 | `typlympics-title.jpg` | Title screen for Typlympics |
+| `beerleague-title.jpg` | Title art for Beer League Hockey |
 
 ## Run it locally
 
