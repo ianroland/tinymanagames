@@ -139,6 +139,15 @@ a.slot:hover, a.slot:focus-visible { border-color: var(--sun-gold); background: 
 .dna-hero .dots button[aria-pressed="true"] { background: var(--sun-gold); }
 .cta-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 
+/* Mana casts: a play counter shown as an arcade credit display beside each Play now button */
+.plays { display: inline-flex; align-items: center; gap: 8px; }
+.plays .coin { width: 27px; height: 27px; image-rendering: pixelated; }
+.plays .digits { display: inline-flex; gap: 2px; }
+.plays .digits b { width: 17px; height: 26px; display: grid; place-items: center; background: #000; border: 1px solid var(--line); color: var(--sun-gold); font-family: var(--display); font-size: 15px; font-weight: 400; font-variant-numeric: tabular-nums; }
+.plays .digits b.z { color: #5a4a1c; }
+.plays-l { font-family: var(--display); font-size: 12px; color: var(--muted); text-transform: uppercase; }
+.plays .sr { position: absolute; left: -9999px; }
+
 /* Buttons: hard pixel shadow, no radius */
 .btn {
   font-family: var(--display); font-weight: 700; font-size: 16px; text-decoration: none;
@@ -212,6 +221,23 @@ section > .wrap > p.intro { color: var(--muted); max-width: 38em; margin: 0 0 40
   display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; color: var(--muted);
 }
 .next b { font-family: var(--display); color: var(--cream); font-size: 15px; }
+
+/* Workshop builds: a compact row under the playable games */
+.soon-h { font-size: clamp(20px, 2.6vw, 28px); margin: 80px 0 28px; padding-top: 32px; border-top: 2px solid var(--line); }
+.soon { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.soon-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.soon-card .screen { box-shadow: 6px 6px 0 var(--line); border-color: var(--muted); margin-bottom: 6px; }
+.soon-card .screen.blank { aspect-ratio: 3 / 2; display: grid; place-items: center; background: var(--ink-2); border-style: dashed; }
+.soon-card .screen.blank::after { display: none; }
+.soon-card .screen.blank span { font-family: var(--display); font-size: 56px; color: var(--line); }
+.soon-card h4 { font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1.15; margin: 0; text-wrap: balance; }
+.soon-card .tag { color: var(--muted); font-weight: 500; font-size: 15px; margin: 0; }
+.soon-card .dna { display: flex; margin: 4px 0 0; border-radius: 22px; padding: 8px 14px 8px 8px; gap: 10px; box-shadow: 4px 4px 0 var(--line); border-color: var(--muted); }
+.soon-card .dna .helix { width: 60px; height: 30px; }
+.soon-card .dna-v { font-size: 13px; }
+.soon-card.empty { opacity: .7; }
+@media (max-width: 900px) { .soon { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .soon { grid-template-columns: minmax(0, 1fr); } .soon-h { margin-top: 56px; } }
 
 /* Tiny Mana Jam teaser */
 .jam { border-top: 2px solid var(--line); }
@@ -362,22 +388,22 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
           <summary>Tiny Arcade</summary>
           <div class="arcade-menu">
             <p class="arcade-h"><span>Select game</span><span>Plays in your browser</span></p>
-            <a class="slot" href="https://www.ryansgolf.app" target="_blank" rel="noopener">
+            <a class="slot" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
               <img src="ryan-title.jpg" alt="" width="1280" height="720">
               <span class="slot-t"><b>Ryan's Road to the LPGA</b><small>Golf RPG</small></span>
               <em>&#9654; Play</em>
             </a>
-            <a class="slot" href="https://tinymana.github.io/aussie8/" target="_blank" rel="noopener">
+            <a class="slot" href="https://tinymana.github.io/aussie8/" data-game="aussie8" target="_blank" rel="noopener">
               <img src="aussie8-title.jpg" alt="" width="1200" height="800">
               <span class="slot-t"><b>Aussie8</b><small>Off-road racing</small></span>
               <em>&#9654; Play</em>
             </a>
-            <a class="slot" href="https://tinymana.github.io/typlympics/" target="_blank" rel="noopener">
+            <a class="slot" href="https://tinymana.github.io/typlympics/" data-game="typlympics" target="_blank" rel="noopener">
               <img src="typlympics-title.jpg" alt="" width="1200" height="800">
               <span class="slot-t"><b>Typlympics</b><small>Typing track meet</small></span>
               <em>&#9654; Play</em>
             </a>
-            <a class="slot" href="https://tinymana.github.io/fridaynightdynasty/" target="_blank" rel="noopener">
+            <a class="slot" href="https://tinymana.github.io/fridaynightdynasty/" data-game="fridaynightdynasty" target="_blank" rel="noopener">
               <img src="fridaynight-title.jpg" alt="" width="1280" height="720">
               <span class="slot-t"><b>Friday Night Dynasty</b><small>Football coaching sim &middot; Demo</small></span>
               <em>&#9654; Play</em>
@@ -404,7 +430,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <h1>Pixel games, built by <em>AI agents</em>, shipped on the web stack.</h1>
       <p class="lede">Tiny Mana Studios makes 32-bit-style games that open in a browser tab. Each one is an agentic build: AI agents write the code under human direction, mostly in plain HTML, CSS and JavaScript.</p>
       <div class="cta-row">
-        <a class="btn" href="https://www.ryansgolf.app" target="_blank" rel="noopener">&#9654; Play the first build</a>
+        <a class="btn" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">&#9654; Play the first build</a>
         <a class="btn ghost" href="#builds">See the builds</a>
       </div>
     </div>
@@ -412,7 +438,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <canvas class="helix" data-f="0.2" width="72" height="26" aria-hidden="true"></canvas>
       <p class="k"><span>Retro DNA</span><span id="dh-no">Build 01</span></p>
       <p class="eq" aria-live="polite"><span id="dh-a">Neo Turf Masters</span><i>meets</i><span id="dh-b">Vegas Stakes</span></p>
-      <a class="result" id="dh-link" href="https://www.ryansgolf.app" target="_blank" rel="noopener">
+      <a class="result" id="dh-link" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
         <img id="dh-img" src="ryan-title.jpg" alt="" width="1280" height="720">
         <span><small>Makes</small><b id="dh-title">Ryan's Road to the LPGA</b></span>
         <em>&#9654; Play</em>
@@ -428,10 +454,10 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   <div class="wrap">
     <p class="label">Builds</p>
     <h2>Now playing</h2>
-    <p class="intro">Every build is free to play and runs in the browser. Each one lists its Retro DNA: the classics it descends from.</p>
+    <p class="intro">Every game here is free to play and runs in the browser. Each one lists its Retro DNA: the two classics it descends from.</p>
 
     <div class="build">
-      <a class="screen" href="https://www.ryansgolf.app" target="_blank" rel="noopener">
+      <a class="screen" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
         <img src="ryan-title.jpg" alt="Title screen of Ryan's Road to the LPGA: a pixel-art golfer mid-swing above a coastal course at sunset, with the prompt Press Enter" width="1280" height="720">
         <span class="play">&#9654; Press Enter</span>
       </a>
@@ -449,14 +475,14 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
         </div>
         <p>Train Ryan from an 18-year-old amateur to the LPGA Tour. Play arcade golf with a two-click swing, draw and fade, wind and sloping greens. Between rounds, train, work shifts, sign sponsors and try not to lose it all at the casino.</p>
         <div class="cta-row">
-          <a class="btn" href="https://www.ryansgolf.app" target="_blank" rel="noopener">&#9654; Play now</a>
-          <a class="url" href="https://www.ryansgolf.app" target="_blank" rel="noopener">www.ryansgolf.app</a>
+          <a class="btn" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">&#9654; Play now</a>
+          <span class="plays" data-plays="ryan"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span><span class="plays-l">mana casts</span></span>
         </div>
       </div>
     </div>
 
     <div class="build flip">
-      <a class="screen r32" href="https://tinymana.github.io/aussie8/" target="_blank" rel="noopener">
+      <a class="screen r32" href="https://tinymana.github.io/aussie8/" data-game="aussie8" target="_blank" rel="noopener">
         <img src="aussie8-title.jpg" alt="Title screen of Aussie8: a white, green and gold number 8 off-road truck leading two rivals down a red dirt track at dusk, with Uluru on the horizon and the prompt Press Start" width="1200" height="800">
         <span class="play">&#9654; Press Start</span>
       </a>
@@ -474,13 +500,14 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
         </div>
         <p>Trophy trucks, red dirt and floodlights, with Uluru on the horizon. Every choice rides shotgun. Drive with the arrow keys or WASD, hit Space for nitro, and your progress saves in the browser.</p>
         <div class="cta-row">
-          <a class="btn" href="https://tinymana.github.io/aussie8/" target="_blank" rel="noopener">&#9654; Play now</a>
+          <a class="btn" href="https://tinymana.github.io/aussie8/" data-game="aussie8" target="_blank" rel="noopener">&#9654; Play now</a>
+          <span class="plays" data-plays="aussie8"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span><span class="plays-l">mana casts</span></span>
         </div>
       </div>
     </div>
 
     <div class="build">
-      <a class="screen r32" href="https://tinymana.github.io/typlympics/" target="_blank" rel="noopener">
+      <a class="screen r32" href="https://tinymana.github.io/typlympics/" data-game="typlympics" target="_blank" rel="noopener">
         <img src="typlympics-title.jpg" alt="Title screen of Typlympics: pixel-art athletes hunched over keyboards in a packed stadium at sunset, with a menu offering Play Event, Career Mode, Multiplayer, Leaderboards and Options" width="1200" height="800">
         <span class="play">&#9654; Play Event</span>
       </a>
@@ -498,13 +525,14 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
         </div>
         <p>Every clean keystroke is a metre down the track, and a typo makes your athlete stumble. Race the 100m against a ghost of your own best run, and watch for the photo finish. You need a real keyboard. More events are on the way.</p>
         <div class="cta-row">
-          <a class="btn" href="https://tinymana.github.io/typlympics/" target="_blank" rel="noopener">&#9654; Play now</a>
+          <a class="btn" href="https://tinymana.github.io/typlympics/" data-game="typlympics" target="_blank" rel="noopener">&#9654; Play now</a>
+          <span class="plays" data-plays="typlympics"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span><span class="plays-l">mana casts</span></span>
         </div>
       </div>
     </div>
 
     <div class="build flip">
-      <a class="screen" href="https://tinymana.github.io/fridaynightdynasty/" target="_blank" rel="noopener">
+      <a class="screen" href="https://tinymana.github.io/fridaynightdynasty/" data-game="fridaynightdynasty" target="_blank" rel="noopener">
         <img src="fridaynight-title.jpg" alt="Title screen of Friday Night Dynasty: a head coach in a headset holds a play sheet on the sideline while his team huddles at midfield under stadium lights at sunset" width="1280" height="720">
         <span class="play">&#9654; Press Start</span>
       </a>
@@ -522,58 +550,56 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
         </div>
         <p>A high school football coaching and dynasty sim. You never touch the ball: you call the plays, set the depth chart and manage the clock, and your athletes execute. Seniors graduate, freshmen arrive, and you rebuild the program year after year on the road from league title to state championship. The demo is a single exhibition game.</p>
         <div class="cta-row">
-          <a class="btn" href="https://tinymana.github.io/fridaynightdynasty/" target="_blank" rel="noopener">&#9654; Play now</a>
+          <a class="btn" href="https://tinymana.github.io/fridaynightdynasty/" data-game="fridaynightdynasty" target="_blank" rel="noopener">&#9654; Play now</a>
+          <span class="plays" data-plays="fridaynightdynasty"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span><span class="plays-l">mana casts</span></span>
         </div>
       </div>
     </div>
 
-    <div class="build">
-      <div class="screen r32">
-        <img src="pickleball-title.jpg" alt="Title screen of Pickleball Dynasty: two doubles teams face off across the net on a palm-lined court at sunset, with a menu offering Career Mode, Dynasty Mode, Exhibition, Online Play and Options" width="1200" height="800">
-      </div>
-
-      <div>
+    <h3 class="soon-h">In the workshop</h3>
+    <div class="soon">
+      <article class="soon-card">
+        <div class="screen r32">
+          <img src="pickleball-title.jpg" alt="Title screen of Pickleball Dynasty: two doubles teams face off across the net on a palm-lined court at sunset, with a menu offering Career Mode, Dynasty Mode, Exhibition, Online Play and Options" width="1200" height="800">
+        </div>
         <div class="meta">
           <span class="no">Build 05</span>
           <span class="pill wip"><i></i>In the workshop</span>
         </div>
-        <h3>Pickleball Dynasty</h3>
+        <h4>Pickleball Dynasty</h4>
         <p class="tag">Start local. Build your legacy. Rule the court.</p>
         <div class="dna">
           <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
           <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">Super Tennis <i>meets</i> SimGolf</span></div>
         </div>
-        <p>A retro sports RPG with arcade pickleball, career progression and club management. Create a player, find the right doubles partner and climb from neighborhood courts to championship arenas. Then build a club, recruit talent, manage the personalities and found a dynasty. Own the kitchen.</p>
-      </div>
-    </div>
-
-    <div class="build flip">
-      <div class="screen r32">
-        <img src="beerleague-title.jpg" alt="Title art for Beer League Hockey: a crest with crossed sticks and a beer mug over an outdoor rink at dusk, with The Penalty Box sports bar glowing in neon beside the ice" width="1200" height="800">
-      </div>
-
-      <div>
+      </article>
+      <article class="soon-card">
+        <div class="screen r32">
+          <img src="beerleague-title.jpg" alt="Title art for Beer League Hockey: a crest with crossed sticks and a beer mug over an outdoor rink at dusk, with The Penalty Box sports bar glowing in neon beside the ice" width="1200" height="800">
+        </div>
         <div class="meta">
           <span class="no">Build 06</span>
           <span class="pill wip"><i></i>In the workshop</span>
         </div>
-        <h3>Beer League Hockey</h3>
+        <h4>Beer League Hockey</h4>
         <p class="tag">16-bit arcade hockey with a rec-league dynasty</p>
         <div class="dna">
           <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
           <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">NHL '94 <i>meets</i> Willy Beamish</span></div>
         </div>
-        <p>You are the captain. Play the games, chase the fees and keep the room together while your team climbs from Tin to Gold League. Your best winger works night shifts and your goalie owes $240. A play link lands here when the puck drops.</p>
-      </div>
-    </div>
-
-    <div class="next">
-      <b>Build 07</b>
-      <span>Not started yet. The next cartridge shows up here.</span>
-      <div class="dna">
+      </article>
+      <article class="soon-card empty">
+        <div class="screen r32 blank" aria-hidden="true"><span>?</span></div>
+        <div class="meta">
+          <span class="no">Build 07</span>
+        </div>
+        <h4>Insert coin</h4>
+        <p class="tag">Not started yet. The next cartridge shows up here.</p>
+        <div class="dna">
           <canvas class="helix" width="32" height="14" aria-hidden="true"></canvas>
           <div class="dna-t"><span class="dna-k">Retro DNA</span><span class="dna-v">??? <i>meets</i> ???</span></div>
         </div>
+      </article>
     </div>
   </div>
 </section>
@@ -581,14 +607,13 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
 <section id="jam" class="jam">
   <div class="wrap">
     <div>
-      <p class="label">Coming eventually</p>
+      <p class="label">Make your own</p>
       <h2>Tiny Mana Jam</h2>
-      <p class="intro">A 48-hour AI build contest. Every jam opens with a random Retro DNA theme, and each dev builds their own game in that spirit before the clock runs out. No date yet. Until then, a new Retro DNA theme is drawn here every day.</p>
+      <p class="intro">The Jam is the home for community-made games. Start from a Retro DNA theme, build a browser game in that spirit and share the link. There is no deadline and no judging, so build at your own pace.</p>
       <ul class="rules">
-        <li><b>48 hours</b><span>From theme reveal to final link.</span></li>
-        <li><b>Solo</b><span>One developer per entry.</span></li>
-        <li><b>Agents</b><span>Claude Code, plus one helper model of your choice.</span></li>
-        <li><b>Web stack</b><span>A full game in HTML, CSS and JavaScript that plays in a browser tab.</span></li>
+        <li><b>Theme</b><span>Start from a Retro DNA pair: today's, a fresh roll or one of your own.</span></li>
+        <li><b>Agents</b><span>Built with AI coding agents, such as Claude Code plus a helper model of your choice.</span></li>
+        <li><b>Web stack</b><span>A game in HTML, CSS and JavaScript that plays in a browser tab.</span></li>
         <li><b>Retro</b><span>Themes only draw from games of the 128-bit era and earlier.</span></li>
         <li><b>Homage</b><span>Clone the feel, not the files. Art, names and code are your own.</span></li>
       </ul>
@@ -959,6 +984,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   var API = 'https://epvpekylasvxoipxyvku.supabase.co/rest/v1';
   var KEY = 'sb_publishable_TLoH_YF1GCoDR4ts-hPLnQ_N12xZ-YT'; // public key: row-level security limits what it can do
   var status = document.getElementById('jam-status'), form = document.getElementById('share-form'), msg = document.getElementById('share-msg');
+  window.tinyManaCall = call;
   function call(path, opts) {
     opts = opts || {};
     opts.headers = Object.assign({ apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' }, opts.headers || {});
@@ -1077,17 +1103,17 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
 (function () {
   var box = document.getElementById('dna-hero'); if (!box) return;
   var BUILDS = [
-    { no: 'Build 01', a: 'Neo Turf Masters', b: 'Vegas Stakes', title: "Ryan's Road to the LPGA", img: 'ryan-title.jpg', url: 'https://www.ryansgolf.app' },
-    { no: 'Build 02', a: 'Super Off Road', b: 'Road Rash', title: 'Aussie8', img: 'aussie8-title.jpg', url: 'https://tinymana.github.io/aussie8/' },
-    { no: 'Build 03', a: 'Track & Field', b: 'The Typing of the Dead', title: 'Typlympics', img: 'typlympics-title.jpg', url: 'https://tinymana.github.io/typlympics/' },
-    { no: 'Build 04', a: 'Tecmo Super Bowl', b: 'NFL Head Coach', title: 'Friday Night Dynasty', img: 'fridaynight-title.jpg', url: 'https://tinymana.github.io/fridaynightdynasty/' }
+    { no: 'Build 01', a: 'Neo Turf Masters', b: 'Vegas Stakes', title: "Ryan's Road to the LPGA", img: 'ryan-title.jpg', url: 'https://www.ryansgolf.app', slug: 'ryan' },
+    { no: 'Build 02', a: 'Super Off Road', b: 'Road Rash', title: 'Aussie8', img: 'aussie8-title.jpg', url: 'https://tinymana.github.io/aussie8/', slug: 'aussie8' },
+    { no: 'Build 03', a: 'Track & Field', b: 'The Typing of the Dead', title: 'Typlympics', img: 'typlympics-title.jpg', url: 'https://tinymana.github.io/typlympics/', slug: 'typlympics' },
+    { no: 'Build 04', a: 'Tecmo Super Bowl', b: 'NFL Head Coach', title: 'Friday Night Dynasty', img: 'fridaynight-title.jpg', url: 'https://tinymana.github.io/fridaynightdynasty/', slug: 'fridaynightdynasty' }
   ];
   var $ = function (id) { return document.getElementById(id); }, dots = $('dh-dots'), cur = 0, paused = false;
   var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function show(i) {
     cur = i; var d = BUILDS[i];
     $('dh-no').textContent = d.no; $('dh-a').textContent = d.a; $('dh-b').textContent = d.b;
-    $('dh-title').textContent = d.title; $('dh-img').src = d.img; $('dh-link').href = d.url;
+    $('dh-title').textContent = d.title; $('dh-img').src = d.img; $('dh-link').href = d.url; $('dh-link').setAttribute('data-game', d.slug);
     for (var k = 0; k < dots.children.length; k++) dots.children[k].setAttribute('aria-pressed', k === i);
   }
   BUILDS.forEach(function (d, i) {
@@ -1099,6 +1125,61 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   ['mouseenter', 'focusin'].forEach(function (e) { box.addEventListener(e, function () { paused = true; }); });
   box.addEventListener('mouseleave', function () { paused = false; });
   if (!still) setInterval(function () { if (!paused && !document.hidden) show((cur + 1) % BUILDS.length); }, 4500);
+})();
+
+// Play counter: counts Play clicks made on this site (Supabase) and shows them as an arcade credit display.
+(function () {
+  var boxes = document.querySelectorAll('.plays'); if (!boxes.length) return;
+  var call = window.tinyManaCall, counts = {}, still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function coin(c) {                                           // 9x9 mana spark, like the star on the wizard's staff
+    var x = c.getContext('2d'), rows = ['....Y....', '.D..Y..D.', '....Y....', '...YYY...', 'YYYYHYYYY', '...YYY...', '....Y....', '.D..Y..D.', '....Y....'];
+    var col = { Y: '#fbb813', H: '#ffffff', D: '#c98a06' };
+    rows.forEach(function (r, y) { for (var i = 0; i < 9; i++) if (col[r[i]]) { x.fillStyle = col[r[i]]; x.fillRect(i, y, 1, 1); } });
+  }
+  function paint(box, n) {                                     // n === null shows dashes: no count available
+    var d = box.querySelector('.digits'), text = n === null ? '------' : String(Math.max(0, n));
+    while (text.length < 6) text = '0' + text;
+    d.textContent = '';
+    var lead = true;
+    for (var i = 0; i < text.length; i++) {
+      var b = document.createElement('b'); b.textContent = text[i];
+      if (n !== null && lead && text[i] === '0' && i < text.length - 1) b.className = 'z'; else lead = false;
+      d.appendChild(b);
+    }
+    var sr = box.querySelector('.sr'); if (!sr) { sr = document.createElement('span'); sr.className = 'sr'; box.appendChild(sr); }
+    sr.textContent = n === null ? 'Mana cast count unavailable' : n + ' mana casts (plays)';
+  }
+  function showAll(slug) {
+    for (var i = 0; i < boxes.length; i++) if (!slug || boxes[i].getAttribute('data-plays') === slug) {
+      var v = counts[boxes[i].getAttribute('data-plays')]; paint(boxes[i], v === undefined ? null : v);
+    }
+  }
+  function rollUp() {                                          // count up from zero once on load
+    if (still) return showAll();
+    var t0 = null, final = Object.assign({}, counts);
+    (function step(t) {
+      if (t0 === null) t0 = t;
+      var k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
+      for (var s in final) counts[s] = Math.round(final[s] * e);
+      showAll();
+      if (k < 1) requestAnimationFrame(step); else { counts = final; showAll(); }
+    })(performance.now());
+  }
+  for (var i = 0; i < boxes.length; i++) { coin(boxes[i].querySelector('.coin')); paint(boxes[i], null); }
+  if (!call) return;
+  call('/game_plays?select=slug,plays').then(function (res) { if (!res.ok) throw 0; return res.json(); })
+    .then(function (rows) { rows.forEach(function (r) { counts[r.slug] = Number(r.plays) || 0; }); rollUp(); }, function () {});
+
+  // One play per game per browser session, counted when a Play link is clicked.
+  var done = {};
+  document.addEventListener('click', function (ev) {
+    var a = ev.target.closest ? ev.target.closest('a[data-game]') : null; if (!a) return;
+    var slug = a.getAttribute('data-game'), key = 'tm_played_' + slug;
+    try { if (sessionStorage.getItem(key)) return; sessionStorage.setItem(key, '1'); } catch (e) { if (done[slug]) return; }
+    done[slug] = 1;
+    if (counts[slug] !== undefined) { counts[slug]++; showAll(slug); }
+    call('/rpc/count_play', { method: 'POST', body: JSON.stringify({ game: slug }), keepalive: true }).catch(function () {});
+  });
 })();
 </script>
 </body>
