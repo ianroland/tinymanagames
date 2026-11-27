@@ -155,15 +155,6 @@ a.slot:hover, a.slot:focus-visible { border-color: var(--sun-gold); background: 
 .plays.total .digits { gap: 3px; }
 .plays.total .digits b { width: clamp(26px, 3vw, 34px); height: 50px; font-size: clamp(22px, 2.6vw, 30px); border-width: 2px; }
 .dna-hero .note { margin: 0; color: var(--muted); font-size: 14px; }
-.mana-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.dna-hero .mana-rows .result { grid-template-columns: 56px minmax(0, 1fr) auto; padding: 6px 8px 6px 6px; }
-.dna-hero .mana-rows .result img { width: 56px; height: 36px; }
-.dna-hero .mana-rows .result b { font-size: 13px; }
-.dna-hero .result .plays.mini { gap: 6px; flex-direction: row; align-items: center; }
-.dna-hero .result .plays.mini .digits { flex-direction: row; display: inline-flex; gap: 2px; }
-.dna-hero .result .plays.mini .sr { display: block; }
-.plays.mini .coin { width: 18px; height: 18px; }
-.plays.mini .digits b { width: 13px; height: 20px; font-size: 12px; }
 
 /* Buttons: hard pixel shadow, no radius */
 .btn {
@@ -455,29 +446,7 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       <canvas id="mana-fx" width="72" height="18" aria-hidden="true"></canvas>
       <p class="k"><span>Total mana cast</span><span>All games</span></p>
       <div class="plays total" data-plays="*" data-len="7"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></div>
-      <p class="note">Every play casts one. Pick a game and add yours.</p>
-      <ol class="mana-rows" id="mana-rows">
-        <li data-row="ryan"><a class="result" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
-          <img src="ryan-title.jpg" alt="" width="1280" height="720">
-          <b>Ryan's Road to the LPGA</b>
-          <span class="plays mini" data-plays="ryan"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
-        </a></li>
-        <li data-row="aussie8"><a class="result" href="https://tinymana.github.io/aussie8/" data-game="aussie8" target="_blank" rel="noopener">
-          <img src="aussie8-title.jpg" alt="" width="1200" height="800">
-          <b>Aussie8</b>
-          <span class="plays mini" data-plays="aussie8"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
-        </a></li>
-        <li data-row="typlympics"><a class="result" href="https://tinymana.github.io/typlympics/" data-game="typlympics" target="_blank" rel="noopener">
-          <img src="typlympics-title.jpg" alt="" width="1200" height="800">
-          <b>Typlympics</b>
-          <span class="plays mini" data-plays="typlympics"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
-        </a></li>
-        <li data-row="fridaynightdynasty"><a class="result" href="https://tinymana.github.io/fridaynightdynasty/" data-game="fridaynightdynasty" target="_blank" rel="noopener">
-          <img src="fridaynight-title.jpg" alt="" width="1280" height="720">
-          <b>Friday Night Dynasty</b>
-          <span class="plays mini" data-plays="fridaynightdynasty"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
-        </a></li>
-      </ol>
+      <p class="note">Every play of a Tiny Mana game casts one.</p>
     </div>
   </main>
 </div>
@@ -1165,20 +1134,15 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       var v = key === '*' ? total : counts[key]; paint(boxes[i], v === undefined ? null : v);
     }
   }
-  function sortRows() {                                        // hero list: most-cast game first
-    var ol = document.getElementById('mana-rows'); if (!ol) return;
-    Array.prototype.slice.call(ol.children).map(function (li, i) { return { li: li, i: i, n: counts[li.getAttribute('data-row')] || 0 }; })
-      .sort(function (a, b) { return b.n - a.n || a.i - b.i; }).forEach(function (r) { ol.appendChild(r.li); });
-  }
   function rollUp() {                                          // count up from zero once on load
-    if (still) { sortRows(); return showAll(); }
+    if (still) return showAll();
     var t0 = null, final = Object.assign({}, counts);
     (function step(t) {
       if (t0 === null) t0 = t;
       var k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
       for (var s in final) counts[s] = Math.round(final[s] * e);
       showAll();
-      if (k < 1) requestAnimationFrame(step); else { counts = final; showAll(); sortRows(); }
+      if (k < 1) requestAnimationFrame(step); else { counts = final; showAll(); }
     })(performance.now());
   }
   for (var i = 0; i < boxes.length; i++) { coin(boxes[i].querySelector('.coin')); paint(boxes[i], null); }
