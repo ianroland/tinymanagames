@@ -148,6 +148,23 @@ a.slot:hover, a.slot:focus-visible { border-color: var(--sun-gold); background: 
 .plays-l { font-family: var(--display); font-size: 12px; color: var(--muted); text-transform: uppercase; }
 .plays .sr { position: absolute; left: -9999px; }
 
+/* Hero: total mana cast */
+#mana-fx { width: 100%; height: auto; aspect-ratio: 72 / 18; image-rendering: pixelated; background: var(--ink); border: 2px solid var(--line); }
+.plays.total { gap: 12px; }
+.plays.total .coin { width: 45px; height: 45px; }
+.plays.total .digits { gap: 3px; }
+.plays.total .digits b { width: clamp(26px, 3vw, 34px); height: 50px; font-size: clamp(22px, 2.6vw, 30px); border-width: 2px; }
+.dna-hero .note { margin: 0; color: var(--muted); font-size: 14px; }
+.mana-rows { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.dna-hero .mana-rows .result { grid-template-columns: 56px minmax(0, 1fr) auto; padding: 6px 8px 6px 6px; }
+.dna-hero .mana-rows .result img { width: 56px; height: 36px; }
+.dna-hero .mana-rows .result b { font-size: 13px; }
+.dna-hero .result .plays.mini { gap: 6px; flex-direction: row; align-items: center; }
+.dna-hero .result .plays.mini .digits { flex-direction: row; display: inline-flex; gap: 2px; }
+.dna-hero .result .plays.mini .sr { display: block; }
+.plays.mini .coin { width: 18px; height: 18px; }
+.plays.mini .digits b { width: 13px; height: 20px; font-size: 12px; }
+
 /* Buttons: hard pixel shadow, no radius */
 .btn {
   font-family: var(--display); font-weight: 700; font-size: 16px; text-decoration: none;
@@ -434,16 +451,33 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
         <a class="btn ghost" href="#builds">See the builds</a>
       </div>
     </div>
-    <div class="dna-hero" id="dna-hero">
-      <canvas class="helix" data-f="0.2" width="72" height="26" aria-hidden="true"></canvas>
-      <p class="k"><span>Retro DNA</span><span id="dh-no">Build 01</span></p>
-      <p class="eq" aria-live="polite"><span id="dh-a">Neo Turf Masters</span><i>meets</i><span id="dh-b">Vegas Stakes</span></p>
-      <a class="result" id="dh-link" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
-        <img id="dh-img" src="ryan-title.jpg" alt="" width="1280" height="720">
-        <span><small>Makes</small><b id="dh-title">Ryan's Road to the LPGA</b></span>
-        <em>&#9654; Play</em>
-      </a>
-      <div class="dots" id="dh-dots" role="group" aria-label="Choose a build"></div>
+    <div class="dna-hero" id="mana-hero">
+      <canvas id="mana-fx" width="72" height="18" aria-hidden="true"></canvas>
+      <p class="k"><span>Total mana cast</span><span>All games</span></p>
+      <div class="plays total" data-plays="*" data-len="7"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></div>
+      <p class="note">Every play casts one. Pick a game and add yours.</p>
+      <ol class="mana-rows" id="mana-rows">
+        <li data-row="ryan"><a class="result" href="https://www.ryansgolf.app" data-game="ryan" target="_blank" rel="noopener">
+          <img src="ryan-title.jpg" alt="" width="1280" height="720">
+          <b>Ryan's Road to the LPGA</b>
+          <span class="plays mini" data-plays="ryan"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
+        </a></li>
+        <li data-row="aussie8"><a class="result" href="https://tinymana.github.io/aussie8/" data-game="aussie8" target="_blank" rel="noopener">
+          <img src="aussie8-title.jpg" alt="" width="1200" height="800">
+          <b>Aussie8</b>
+          <span class="plays mini" data-plays="aussie8"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
+        </a></li>
+        <li data-row="typlympics"><a class="result" href="https://tinymana.github.io/typlympics/" data-game="typlympics" target="_blank" rel="noopener">
+          <img src="typlympics-title.jpg" alt="" width="1200" height="800">
+          <b>Typlympics</b>
+          <span class="plays mini" data-plays="typlympics"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
+        </a></li>
+        <li data-row="fridaynightdynasty"><a class="result" href="https://tinymana.github.io/fridaynightdynasty/" data-game="fridaynightdynasty" target="_blank" rel="noopener">
+          <img src="fridaynight-title.jpg" alt="" width="1280" height="720">
+          <b>Friday Night Dynasty</b>
+          <span class="plays mini" data-plays="fridaynightdynasty"><canvas class="coin" width="9" height="9" aria-hidden="true"></canvas><span class="digits" aria-hidden="true"></span></span>
+        </a></li>
+      </ol>
     </div>
   </main>
 </div>
@@ -1099,33 +1133,6 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
   });
 })();
 
-// Hero: Retro DNA showcase that steps through the builds.
-(function () {
-  var box = document.getElementById('dna-hero'); if (!box) return;
-  var BUILDS = [
-    { no: 'Build 01', a: 'Neo Turf Masters', b: 'Vegas Stakes', title: "Ryan's Road to the LPGA", img: 'ryan-title.jpg', url: 'https://www.ryansgolf.app', slug: 'ryan' },
-    { no: 'Build 02', a: 'Super Off Road', b: 'Road Rash', title: 'Aussie8', img: 'aussie8-title.jpg', url: 'https://tinymana.github.io/aussie8/', slug: 'aussie8' },
-    { no: 'Build 03', a: 'Track & Field', b: 'The Typing of the Dead', title: 'Typlympics', img: 'typlympics-title.jpg', url: 'https://tinymana.github.io/typlympics/', slug: 'typlympics' },
-    { no: 'Build 04', a: 'Tecmo Super Bowl', b: 'NFL Head Coach', title: 'Friday Night Dynasty', img: 'fridaynight-title.jpg', url: 'https://tinymana.github.io/fridaynightdynasty/', slug: 'fridaynightdynasty' }
-  ];
-  var $ = function (id) { return document.getElementById(id); }, dots = $('dh-dots'), cur = 0, paused = false;
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function show(i) {
-    cur = i; var d = BUILDS[i];
-    $('dh-no').textContent = d.no; $('dh-a').textContent = d.a; $('dh-b').textContent = d.b;
-    $('dh-title').textContent = d.title; $('dh-img').src = d.img; $('dh-link').href = d.url; $('dh-link').setAttribute('data-game', d.slug);
-    for (var k = 0; k < dots.children.length; k++) dots.children[k].setAttribute('aria-pressed', k === i);
-  }
-  BUILDS.forEach(function (d, i) {
-    var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', d.no + ': ' + d.title);
-    b.addEventListener('click', function () { paused = true; show(i); });
-    dots.appendChild(b);
-  });
-  show(0);
-  ['mouseenter', 'focusin'].forEach(function (e) { box.addEventListener(e, function () { paused = true; }); });
-  box.addEventListener('mouseleave', function () { paused = false; });
-  if (!still) setInterval(function () { if (!paused && !document.hidden) show((cur + 1) % BUILDS.length); }, 4500);
-})();
 
 // Play counter: counts Play clicks made on this site (Supabase) and shows them as an arcade credit display.
 (function () {
@@ -1137,8 +1144,9 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     rows.forEach(function (r, y) { for (var i = 0; i < 9; i++) if (col[r[i]]) { x.fillStyle = col[r[i]]; x.fillRect(i, y, 1, 1); } });
   }
   function paint(box, n) {                                     // n === null shows dashes: no count available
-    var d = box.querySelector('.digits'), text = n === null ? '------' : String(Math.max(0, n));
-    while (text.length < 6) text = '0' + text;
+    var len = +box.getAttribute('data-len') || 6;
+    var d = box.querySelector('.digits'), text = n === null ? new Array(len + 1).join('-') : String(Math.max(0, n));
+    while (text.length < len) text = '0' + text;
     d.textContent = '';
     var lead = true;
     for (var i = 0; i < text.length; i++) {
@@ -1147,22 +1155,30 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
       d.appendChild(b);
     }
     var sr = box.querySelector('.sr'); if (!sr) { sr = document.createElement('span'); sr.className = 'sr'; box.appendChild(sr); }
-    sr.textContent = n === null ? 'Mana cast count unavailable' : n + ' mana casts (plays)';
+    sr.textContent = n === null ? 'Mana cast count unavailable' : n + ' mana casts (plays)' + (box.getAttribute('data-plays') === '*' ? ' across all games' : '');
   }
   function showAll(slug) {
-    for (var i = 0; i < boxes.length; i++) if (!slug || boxes[i].getAttribute('data-plays') === slug) {
-      var v = counts[boxes[i].getAttribute('data-plays')]; paint(boxes[i], v === undefined ? null : v);
+    var keys = Object.keys(counts), total = keys.length ? keys.reduce(function (t, k) { return t + counts[k]; }, 0) : undefined;
+    for (var i = 0; i < boxes.length; i++) {
+      var key = boxes[i].getAttribute('data-plays');
+      if (slug && key !== slug && key !== '*') continue;
+      var v = key === '*' ? total : counts[key]; paint(boxes[i], v === undefined ? null : v);
     }
   }
+  function sortRows() {                                        // hero list: most-cast game first
+    var ol = document.getElementById('mana-rows'); if (!ol) return;
+    Array.prototype.slice.call(ol.children).map(function (li, i) { return { li: li, i: i, n: counts[li.getAttribute('data-row')] || 0 }; })
+      .sort(function (a, b) { return b.n - a.n || a.i - b.i; }).forEach(function (r) { ol.appendChild(r.li); });
+  }
   function rollUp() {                                          // count up from zero once on load
-    if (still) return showAll();
+    if (still) { sortRows(); return showAll(); }
     var t0 = null, final = Object.assign({}, counts);
     (function step(t) {
       if (t0 === null) t0 = t;
       var k = Math.min(1, (t - t0) / 900), e = 1 - Math.pow(1 - k, 3);
       for (var s in final) counts[s] = Math.round(final[s] * e);
       showAll();
-      if (k < 1) requestAnimationFrame(step); else { counts = final; showAll(); }
+      if (k < 1) requestAnimationFrame(step); else { counts = final; showAll(); sortRows(); }
     })(performance.now());
   }
   for (var i = 0; i < boxes.length; i++) { coin(boxes[i].querySelector('.coin')); paint(boxes[i], null); }
@@ -1180,6 +1196,31 @@ footer p { margin: 0; color: var(--muted); font-size: 13px; max-width: 46em; }
     if (counts[slug] !== undefined) { counts[slug]++; showAll(slug); }
     call('/rpc/count_play', { method: 'POST', body: JSON.stringify({ game: slug }), keepalive: true }).catch(function () {});
   });
+})();
+
+// Hero: mana sparks drifting up behind the total, like the star on the wizard's staff.
+(function () {
+  var c = document.getElementById('mana-fx'); if (!c) return;
+  var x = c.getContext('2d'), W = c.width, H = c.height, motes = [];
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (var i = 0; i < 16; i++) motes.push({ x: Math.random() * W, y: Math.random() * H, v: 0.004 + Math.random() * 0.01, p: Math.random() * 6.28, big: i % 4 === 0, gold: i % 3 !== 0 });
+  function plus(px, py, r, col) { x.fillStyle = col; x.fillRect(px - r, py, 2 * r + 1, 1); x.fillRect(px, py - r, 1, 2 * r + 1); }
+  var last = 0;
+  function draw(t) {
+    var dt = Math.min(50, t - last); last = t;
+    x.clearRect(0, 0, W, H);
+    motes.forEach(function (m) {
+      if (!still) { m.y -= m.v * dt; if (m.y < -2) { m.y = H + 2; m.x = Math.random() * W; } }
+      var a = 0.35 + 0.65 * Math.abs(Math.sin(m.p + t * 0.002));
+      x.globalAlpha = a; plus(Math.round(m.x), Math.round(m.y), m.big && a > 0.6 ? 1 : 0, m.gold ? '#fbb813' : '#f7f0e1');
+    });
+    x.globalAlpha = 1;
+    var cx = W >> 1, cy = H >> 1, r = still ? 6 : 5 + Math.round(1.5 * Math.sin(t * 0.004));   // the big spark
+    plus(cx, cy, r, '#fbb813'); x.fillStyle = '#fbb813'; x.fillRect(cx - 1, cy - 1, 3, 3); x.fillStyle = '#ffffff'; x.fillRect(cx, cy, 1, 1);
+    [[-4, -4], [4, -4], [-4, 4], [4, 4]].forEach(function (d) { x.fillStyle = '#c98a06'; x.fillRect(cx + d[0], cy + d[1], 1, 1); });
+    if (!still) requestAnimationFrame(draw);
+  }
+  draw(0); if (!still) requestAnimationFrame(draw);
 })();
 </script>
 </body>
