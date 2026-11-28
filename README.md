@@ -18,6 +18,8 @@ A single static page with no build step.
 | `beerleague-title.jpg` | Title art for Beer League Hockey |
 | `pickleball-title.jpg` | Title screen for Pickleball Dynasty |
 | `fridaynight-title.jpg` | Title screen for Friday Night Dynasty |
+| `pgajam-title.jpg` | Title screen for PGA Jam |
+| `dinkordie-title.jpg` | Title screen for Dink or Die |
 
 ## Run it locally
 
